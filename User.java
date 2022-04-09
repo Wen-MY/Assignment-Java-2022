@@ -1,69 +1,39 @@
-package Concept_View;
+public class User{
+    private String name, id, userType;
+    private char[] password;
 
-public class User {
-
-	private int type;
-	private String id;
-	private String password;
-	////
-	public User(String id,String password)
-	{
-		this.id=id;
-		this.password=password;
-	} //for login purpose
-	public User(int type,String id,String password)
-	{
-		this.type=type;
-		this.id=id;
-		this.password=password;
-	}
-	////
-	public int getType()
-	{
-		return type;
-	}
-	public String getTypeString()
-	{
-		switch(type)
-		{
-		case 1:
-			return "Admin";
-		case 2:
-			return "Staff";
-		case 3:
-			return "Customer";
-		default:
-			return null;
-		}
-	}
-	public String getId()
-	{
-		return id;
-	}
-	public String getPassword()
-	{
-		return password;
-	}
-	////
-	public void setId(String id)
-	{
-		this.id=id;
-	}
-	public void setType(int type) 
-	{
-		this.type=type;
-	}		
-	public void setPassword(String password)
-	{
-		this.password = password;
-	}
-	@Override 
-	public String toString()
-	{
-		return getTypeString() +'\t'+ id +'\t' +password;
-	}
-	
+    public User(String initName, String initID){
+        name = initName;
+        id = initID;
+    }
+    public String getName(){
+        return name;
+    }
+    public void setName(String value){
+        name = value;
+    }
+    public char[] getPassword(){
+        return password;
+    }
+    public void setPassword(char[] value){
+        password = value;
+        
+    }
+    public String getID(){
+        return id;
+    }
+    public String getUserType(){
+        return userType;
+    }
+    public void setUserType(int choice){
+        if (choice == 1){
+            userType = "admin";
+        }
+        else if (choice == 2){
+            userType = "employee";
+        }
+        else if (choice == 3){
+            userType = "member";
+        }
+    }
 }
-
-	
-
