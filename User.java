@@ -1,26 +1,20 @@
 public class User{
-    private String name, id, userType;
-    private char[] password;
+    private String id, userType, password;
 
-    public User(String initName, String initID){
-        name = initName;
+    public User(String initID){
         id = initID;
     }
-    public String getName(){
-        return name;
-    }
-    public void setName(String value){
-        name = value;
-    }
-    public char[] getPassword(){
+    public String getPassword(){
         return password;
     }
-    public void setPassword(char[] value){
+    public void setPassword(String value){
         password = value;
-        
     }
     public String getID(){
         return id;
+    }
+    public void setID(String value){
+        id = value;
     }
     public String getUserType(){
         return userType;
@@ -30,10 +24,10 @@ public class User{
             userType = "admin";
         }
         else if (choice == 2){
-            userType = "employee";
+            userType = "staff";
         }
         else if (choice == 3){
-            userType = "member";
+            userType = "cashier";
         }
     }
 }
