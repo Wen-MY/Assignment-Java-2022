@@ -1,12 +1,10 @@
 import java.util.*;
-import java.io.Console;
 
 public class UserController{
     private ArrayList <User> userList;
     private Login login;
-    private HashMap <Login, String> userlogfile;
+    private HashMap <Login, String> userlogfile = new HashMap <Login, String>();
     Scanner input = new Scanner(System.in);
-    Console console = System.console();
 
     public UserController(ArrayList <User> initList, Login initLogin){
         userList = initList;
@@ -135,14 +133,14 @@ public class UserController{
         do{
             do{
                 System.out.printf("\nNew password (minimum 8 characters)\n: ");
-                password1 = new String(console.readPassword());
+                password1 = input.nextLine();
                 if (password1.length()<8){
                     System.out.printf("\nPassword must have at least 8 characters\n");
                 }
             }while(password1.length()<8);
 
             System.out.printf("\nPlease insert again\n: ");
-            password2 = new String(console.readPassword());
+            password2 = input.nextLine();
 
             if (password1.equals(password2)){
                 valid = true;
