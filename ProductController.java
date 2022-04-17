@@ -79,7 +79,6 @@ public class ProductController{
                 System.out.printf("\nDo you wish to: \n");
                 System.out.printf("1. Edit the product\n");
                 System.out.printf("2. Delete the product\n");
-                System.out.printf("3. Restock product\n");
                 System.out.printf("0. Back to menu\n>>>");
                 String choice = input.nextLine();
 
@@ -114,7 +113,8 @@ public class ProductController{
                         new Timestamp(System.currentTimeMillis()), 
                         String.format(
                             "Edited Product Name: '%s' to '%s'\nPrice: '%.2f' to '%.2f'\nType: '%s' to '%s'|%s",
-                            initName, product.getName(), initPrice, product.getPrice(), initType, product.getProductType(),login.getUser().getID()
+                            initName, product.getName(), initPrice, product.getPrice(), 
+                            initType, product.getProductType(),login.getUser().getID()
                         )
                     );
                     break;
@@ -125,7 +125,10 @@ public class ProductController{
                     if (userInput == 'y' || userInput == 'Y'){
                         deleteProduct(product);
                         System.out.printf("Product deleted\n");
-                        userlogfile.put(new Timestamp(System.currentTimeMillis()), "Deleted Product: "+product.getName() +'|'+login.getUser().getID());
+                        userlogfile.put(
+                            new Timestamp(System.currentTimeMillis()), 
+                            "Deleted Product: "+product.getName() +'|'+login.getUser().getID()
+                        );
                         break;
                     }
                     else{
@@ -153,6 +156,7 @@ public class ProductController{
                 else if(choice.equals("0")){
                     System.out.printf("Press enter to continue...");
                     input.nextLine();   
+                    break;
                 }
                 else{
                     System.out.printf("Invalid Input\n");
@@ -181,13 +185,23 @@ public class ProductController{
                 price = Double.parseDouble(input.nextLine());
                 break;
             } catch (NumberFormatException ex){
+                System.out.printf("Double Input Required\n");
+            }
+        }
+        System.out.printf("Product Stock: ");
+        int stock;
+        while(true){
+            try{
+                stock = Integer.parseInt(input.nextLine());
+                break;
+            } catch (NumberFormatException ex){
                 System.out.printf("Integer Input Required\n");
             }
         }
         System.out.printf("Product Type: ");
         String type = input.nextLine();
     
-        Product product = new Product(id, name, price, type);
+        Product product = new Product(id, name, price, type, stock);
 
         productList.add(product);
         System.out.printf("Product added successfully\n");
