@@ -110,12 +110,12 @@ public class ObjectFile{
 	@SuppressWarnings({ "finally", "unchecked" })
 	public HashMap<Timestamp,String> Map_Reader()
 	{
-		HashMap<Timestamp,String> temp = new HashMap<>();
+		HashMap<Timestamp,String> temp = new HashMap<Timestamp,String>();
 		try {
 			FileInputStream f = new FileInputStream(new File("UserLogFile.txt"));
 			ObjectInputStream i = new ObjectInputStream(f);
 			
-			temp=(HashMap<Timestamp,String>)i.readObject();
+			temp=(HashMap<Timestamp, String>) i.readObject();
 			i.close();
 			}catch (FileNotFoundException e)
 			{
