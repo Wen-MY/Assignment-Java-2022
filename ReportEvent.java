@@ -21,7 +21,7 @@ public class ReportEvent {
 	public void Event() {
 		boolean loop=true;
 		do{
-		System.out.println("1.Sales Report\n2.Stock Report\n3.User Report\n0.Exit to main menu");
+		System.out.println("1.Sales Report\n3.User Report\n0.Exit to main menu");
 		try {
 		int opt = Integer.parseInt(input.nextLine());
 		if(opt!=0)
@@ -80,10 +80,7 @@ public class ReportEvent {
 	                input.nextLine();
 				}
 				break;
-			case 2://stock report
-				System.out.println("Invalid Option");
-				break;
-			case 3://user report
+			case 2://user report
 				if(strdate2==null)
 				{
 					UserReport user_rep = new UserReport(date,userlogfile);
