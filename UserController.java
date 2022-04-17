@@ -1,5 +1,4 @@
 import java.util.*;
-import java.io.Console;
 import java.sql.Timestamp;
 
 public class UserController{
@@ -7,7 +6,6 @@ public class UserController{
     private Login login;
     private HashMap <Timestamp,String> userlogfile;
     Scanner input = new Scanner(System.in);
-    Console console = System.console();
 
     public UserController(ArrayList <User> initList, Login initLogin){
         userList = initList;
@@ -129,21 +127,22 @@ public class UserController{
             }
         }
     }
-    public void setPassword(User user){
+    @SuppressWarnings("resource")
+	public void setPassword(User user){
         String password1, password2;
         boolean valid = false;
         
         do{
             do{
                 System.out.printf("\nNew password (minimum 8 characters)\n: ");
-                password1 = new String(console.readPassword());
+                password1 = new Scanner(System.in).nextLine();
                 if (password1.length()<8){
                     System.out.printf("\nPassword must have at least 8 characters\n");
                 }
             }while(password1.length()<8);
 
             System.out.printf("\nPlease insert again\n: ");
-            password2 = new String(console.readPassword());
+            password2 = new Scanner(System.in).nextLine();
 
             if (password1.equals(password2)){
                 valid = true;
