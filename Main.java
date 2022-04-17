@@ -32,7 +32,7 @@ public class Main {
 			if(!login.validation(userList))
 				System.out.println("Username or Password Wrong");	
 		}while (!login.validation(userList));
-		userlogfile.put(new Timestamp(System.currentTimeMillis()),"Login|"+login.getUser());
+		userlogfile.put(new Timestamp(System.currentTimeMillis()),"Login|"+login.getUser().getID());
 		
 		
 		int menuopt;
@@ -184,7 +184,7 @@ public class Main {
 				System.out.printf("Press enter to continue...");
 				input.nextLine();
 
-				userlogfile.put(new Timestamp(System.currentTimeMillis()), "Account name changed: "+initName+ " to " +login.getUser().getID()+'|'+login.getUser());
+				userlogfile.put(new Timestamp(System.currentTimeMillis()), "Account name changed: "+initName+ " to " +login.getUser().getID());
 				break;
 			}
 			else if(choice == 2){
@@ -222,7 +222,7 @@ public class Main {
 					new Timestamp(System.currentTimeMillis()), 
 					String.format(
 						"Account Password changed: '%s' to '%s'%s",
-						initPassword, password1 ,login.getUser()
+						initPassword, password1 ,+'|'+login.getUser().getID()
 					)
 				);
 				break;
