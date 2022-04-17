@@ -145,7 +145,7 @@ public class SalesMenuController
 		
 	}
 		
-	private void viewSales()
+	public void viewSales()
 	{
 		// view sales method
 		
@@ -206,7 +206,7 @@ public class SalesMenuController
 		
 	}
 	
-	private void editSales() // edit sales method
+	public void editSales() // edit sales method
 	{
 		/*
 			EDIT OPTIONS (Other than (B) - Back)
