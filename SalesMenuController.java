@@ -1,3 +1,4 @@
+import java.sql.Timestamp;
 import java.util.*;
 
 public class SalesMenuController
@@ -21,10 +22,10 @@ public class SalesMenuController
 	
 	// Login details (for record purposes)
 	private Login login;
-	private HashMap <Login, String> userlogfile;
+	private HashMap <Timestamp,String> userlogfile;
 	
 	// For recording activities performed during the duration of the login
-    public HashMap <Login, String> getUserlogfile(){
+    public HashMap <Timestamp,String> getUserlogfile(){
         return userlogfile;
     }
 	
@@ -34,7 +35,7 @@ public class SalesMenuController
 		pList = _pList;
 		rList = _rList;
 		login = _login;
-		userlogfile = new HashMap<Login, String>();
+		userlogfile = new HashMap<Timestamp,String>();
 	}
 	
 	public void showSalesMenu()
@@ -140,12 +141,12 @@ public class SalesMenuController
 		if (newReceipt.getTransactionList().size() != 0)
 		{
 			rList.add(newReceipt);
-			userlogfile.put(login, "Recorded Receipt: "+ newReceipt.getReceiptID());
+			userlogfile.put(new Timestamp(System.currentTimeMillis()), "Recorded Receipt: "+ newReceipt.getReceiptID()+'|'+login.getUser());
 		}
 		
 	}
 		
-	public void viewSales()
+	private void viewSales()
 	{
 		// view sales method
 		
@@ -206,7 +207,7 @@ public class SalesMenuController
 		
 	}
 	
-	public void editSales() // edit sales method
+	private void editSales() // edit sales method
 	{
 		/*
 			EDIT OPTIONS (Other than (B) - Back)
@@ -247,7 +248,7 @@ public class SalesMenuController
 							{
 								r.setDate();
 								// Record the activity of editing date
-								userlogfile.put(login, "Updated date of Receipt ID: "+ r.getReceiptID());
+								userlogfile.put(new Timestamp(System.currentTimeMillis()), "Updated date of Receipt ID: "+ r.getReceiptID()+'|'+login.getUser());
 							}
 							else
 								System.out.println("Receipt date has not been changed. Returning to previous menu....");
@@ -304,7 +305,7 @@ public class SalesMenuController
 									pList.get(pID).updateStock(pList.get(pID).getStock()-Integer.parseInt(quantity));
 									
 									// Record the activity of editing transaction
-									userlogfile.put(login, "Modified Transaction of Receipt ID: "+ r.getReceiptID());
+									userlogfile.put(new Timestamp(System.currentTimeMillis()), "Modified Transaction of Receipt ID: "+ r.getReceiptID()+'|'+login.getUser());
 								}
 								else
 									System.out.println("Insufficient stock! Unable to create new transaction.");
@@ -345,7 +346,7 @@ public class SalesMenuController
 										
 									}
 									// Record the activity of editing transaction
-									userlogfile.put(login, "Modified Transaction of Receipt ID: "+ r.getReceiptID());
+									userlogfile.put(new Timestamp(System.currentTimeMillis()), "Modified Transaction of Receipt ID: "+ r.getReceiptID()+'|'+login.getUser());
 								}
 								else
 									System.out.println("Invalid input! Please try again.");
@@ -366,7 +367,7 @@ public class SalesMenuController
 								deleted = true;
 								
 								// Record the activity of deleting the receipt
-								userlogfile.put(login, "Deleted Receipt ID: "+ r.getReceiptID());
+								userlogfile.put(new Timestamp(System.currentTimeMillis()), "Deleted Receipt ID: "+ r.getReceiptID()+'|'+login.getUser());
 								
 							}
 							else
