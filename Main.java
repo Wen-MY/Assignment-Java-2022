@@ -16,6 +16,9 @@ public class Main {
 		
 		system_init();
 		Login login;
+		
+		while(true)
+		{
 		if(userList.isEmpty())
 		{
 			User admin = new User (1,"Admin","Admin");
@@ -152,6 +155,7 @@ public class Main {
 						(key,value) -> userlogfile.put(key,value)
 						);
 			}
+		}
 		}
 	}
 	
