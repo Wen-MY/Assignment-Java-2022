@@ -1,4 +1,3 @@
-
 import java.util.*;
 import java.sql.Timestamp;
 public class Main {
@@ -14,8 +13,7 @@ public class Main {
         Login login;
         
         if(userList.isEmpty()){
-            User admin = new User ("Admin","Admin");
-            admin.setUserType(1);
+            User admin = new User (1,"Admin","Admin");
             userList.add(admin);
         }
         while (true){
@@ -148,6 +146,7 @@ public class Main {
     
     public static void UserSetting(Login login){	
         while(true){
+            UserController manageUser = new UserController(userList, login);
             System.out.printf("1. Edit Username\n");
             System.out.printf("2. Edit Password\n");
             System.out.printf("0. Back to Menu\n");
@@ -158,6 +157,7 @@ public class Main {
                 System.out.printf("New Username: ");
                 String username = input.nextLine();
                 login.getUser().setID(username);
+                manageUser.findUser(initName).setID(username);
                 System.out.printf("Username changed successfully\n");
                 System.out.printf("Press enter to continue...");
                 input.nextLine();
@@ -194,6 +194,7 @@ public class Main {
                     }
                 }
                 login.getUser().setPassword(password1);
+                manageUser.findUser(login.getUser().getID()).setPassword(password1);
                 System.out.printf("Password changed successfully\n");
                 System.out.printf("Press enter to continue...");
                 input.nextLine();
