@@ -21,7 +21,7 @@ public class ReportEvent {
 	public void Event() {
 		boolean loop=true;
 		do{
-		System.out.println("1.Sales Report\n3.User Report\n0.Exit to main menu");
+		System.out.println("1.Sales Report\n2.User Report\n0.Exit to main menu");
 		try {
 		int opt = Integer.parseInt(input.nextLine());
 		if(opt!=0)
