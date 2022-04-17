@@ -1,5 +1,6 @@
+import java.io.Serializable;
 
-public class Transaction 
+public class Transaction implements Serializable
 {
 	/*
 	Info needed:
@@ -34,7 +35,7 @@ public class Transaction
 	 		   and the meaning can be kept even if the product has been deleted. We are assuming that no
 	 		   two products share the exact same name and attributes (product name is unique).
 	*/
-	
+	private static final long serialVersionUID = 1L;
 	private int tNo;
 	private String item;
 	private String pType;

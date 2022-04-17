@@ -9,6 +9,7 @@ public class ProductController{
     public ProductController(ArrayList <Product> initList, Login initLogin){
         productList = initList;
         login = initLogin;
+        userlogfile = new HashMap<Login,String>();
     }
     public void menu(){
         while (true){
@@ -167,7 +168,7 @@ public class ProductController{
 
         productList.add(product);
         System.out.printf("Product added successfully\n");
-        userlogfile.put(login, "Added Product: "+product.getName());
+        userlogfile.put(login, "Added Product: "+product.getName()+'\t');
     }
     public int getNumOfProduct(){
         return productList.size();

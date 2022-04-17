@@ -1,55 +1,46 @@
-import java.util.Arrays;
-import java.util.Scanner;
-import java.io.Console;
+import java.io.Serializable;
+import java.sql.Timestamp;
+import java.util.ArrayList;
 
-public class Login{
-    private String id;
-    private char[] password;
-    private User user;
-    private UserController manageUser;
+public class Login implements Serializable{
+	private static final long serialVersionUID = 1L;
+	private User user;
+	private Timestamp timestamp;
+	public Login(User user)
+	{
+		this.user=user;
+		this.timestamp = new Timestamp(System.currentTimeMillis());
+	}
+	
+	public User getUser()
+	{
+		return user;
+	}
+	public Timestamp getTimestamp()
+	{
+		return timestamp;
+	}
+	public boolean validation( ArrayList<User> userList)
+	{
+		userList.forEach((u)->
+		{
+			if( u.getID().equals(user.getID()))
+			{
 
-    Console console = System.console();
-    Scanner input = new Scanner(System.in);
-
-    public Login(UserController initManageUser){
-        manageUser = initManageUser;
-    }
-
-    public void login(){
-        boolean valid = false;
-        do{
-            System.out.printf("\nUser ID: ");
-            id = input.next();
-            System.out.printf("Password: ");
-            password = console.readPassword();
-            for (int i=0; i<password.length; i++){
-                password[i] += 13;
-            }
-            if (!Valid()){
-                System.out.printf("ID or Password incorrect.\n");
-                System.out.printf("Please try again.\n");
-            }
-            else{
-                valid = true;
-            }
-        }while(!valid);
-
-        System.out.printf("Login succeed\n");
-        manageUser.printUser(user);
-    }
-
-    public boolean Valid(){
-        user = manageUser.findUser(id);
-        if (user == null){
-            return false;
-        }
-        else{
-            if (Arrays.equals(user.getPassword(), password)){
-                return true;
-            }
-            else{
-                return false;
-            }
-        }
-    }
+				if(u.getPassword().equals(user.getPassword()))
+				{
+					user.setUserType(u.getUserTypeInt());
+					
+				}
+				else
+					user.setUserType(0);
+			}
+			else
+				user.setUserType(0);
+		});
+		if(user.getUserType().equals("Unknown"))
+			return false;
+		else
+			return true;
+	}
 }

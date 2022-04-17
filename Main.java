@@ -1,51 +1,71 @@
+
 import java.util.*;
-import java.io.Console;
-import java.text.ParseException;
+import java.io.*;
 public class Main {
 	
 	static ArrayList <User> userList = new ArrayList<>();
 	static ArrayList <Product> productList = new ArrayList<>();
-	static ArrayList <Sales> sales = new ArrayList<>();
+	static ArrayList <Receipt> salesList = new ArrayList<>();
 	static HashMap <Login,String> userlogfile = new HashMap<>();
 	
+	@SuppressWarnings("resource")
 	public static void main(String [] args)
 	{
-		User admin = new User ("Admin");
-		String password = "Admin";
-		admin.setPassword(password);
-		admin.setUserType(1);
-		userList.add(admin);
-
-		Login login = new Login(userList);
-		login.menu();
-		userlogfile.put(login,"Login\n");
-		int menuopt;
-		int submenuopt;
+		Scanner s = new Scanner(System.in);
+		system_init();
+		Login login;
+		if(userList.isEmpty())
+		{
+			User admin = new User (1,"Admin","Admin");
+			userList.add(admin);
+			//login = new Login(admin); for testing purpose
+		}
+		
 		do{
-			Scanner s = new Scanner(System.in);
+			System.out.print("Username :");
+			String username= s.nextLine();
+			System.out.print("Password :");
+			String password= s.nextLine();
+			login = new Login(new User(username,password));
+			if(!login.validation(userList))
+				System.out.println("Username or Password Wrong");	
+		}while (!login.validation(userList));
+		userlogfile.put(login,"Login\t\t\t");
+		
+		
+		int menuopt;
+		do{
 			adminmenu();
-			menuopt = s.nextInt();
+			
+			menuopt = Integer.parseInt(s.nextLine());
 			if(menuopt!=0)
 			{
-			do{
-				adminsubmenu(menuopt);
-				submenuopt = s.nextInt();
 				switch(menuopt)
 				{
 				case 1:
-					userEvent(login);
+					UserController manageUser = new UserController(userList, login);
+					manageUser.menu();
+					if(manageUser.getUserlogfile()!= null)
+						userlogfile.putAll(manageUser.getUserlogfile());
 					break;
-				case 2:
-					salesEvent(submenuopt,login);
+				case 2://sales event
+					SalesMenuController manageSales = new SalesMenuController(productList,salesList, login);
+					manageSales.showSalesMenu();
+					if (manageSales.getUserlogfile() != null)
+						userlogfile.putAll(manageSales.getUserlogfile());
 					break;
 				case 3:
-					productEvent(login);
+					ProductController manageProduct = new ProductController(productList, login);
+					manageProduct.menu();
+					if(manageProduct.getUserlogfile()!= null)
+						userlogfile.putAll(manageProduct.getUserlogfile());
 					break;
 				case 4:
-					reportEvent(submenuopt,login);
+					ReportEvent e =new ReportEvent(salesList,userlogfile);
+					e.Event();
 					break;
 				case 5:
-					stockEvent(submenuopt,login);
+					System.out.println("Invalid Option");
 					break;
 				case 6:
 					UserSetting(login);
@@ -53,8 +73,6 @@ public class Main {
 				default:
 					System.out.println("Invalid Option");
 				}
-				
-			}while(submenuopt!=0);
 			}
 			else
 			{
@@ -76,32 +94,6 @@ public class Main {
 		System.out.println("6.Account Setting");
 		System.out.println("0.Exit");
 	}
-	public static void adminsubmenu(int opt)
-	{
-		switch(opt)
-		{
-		case 1://User
-			//menu in the controller
-			break;
-		case 2://Sales
-			System.out.println("1.create sales\n2.list sales\n3.delete sales\n0.Exit to main menu");
-			break;
-		case 3://Product
-			//menu in the controller
-			break;
-		case 4://Report
-			System.out.println("1.Sales Report\n2.Stock Report\n3.User Report\n0.Exit to main menu");
-			break;
-		case 5://haven't touch yet product need add more one attribute to do
-			System.out.println("1.update stock\n2.Low Stock Item\n0.Exit to main menu");
-			break;
-		case 6://Setting
-			//move to userSetting();
-			break;
-		default:
-			System.out.println("Invalid Option");
-		}
-	}
 	public static void usermenu()
 	{
 		System.out.println("1.Create sales");
@@ -109,171 +101,10 @@ public class Main {
 		System.out.println("3.Account Setting");
 		System.out.println("4.Exit");
 	}
-
-	public static void userEvent(Login login)
+	
+	public static void UserSetting(Login login)
 	{
-		UserController manageUser = new UserController(userList, login);
-		manageUser.menu();
-		userlogfile.putAll(manageUser.getUserlogfile());
-	}
-	public static void productEvent(Login login)
-	{
-		ProductController manageProduct = new ProductController(productList, login);
-		manageProduct.menu();
-		userlogfile.putAll(manageProduct.getUserlogfile());
-	}
-	public static void salesEvent(int opt,Login login)
-	{
-		Scanner input = new Scanner(System.in);
-		switch(opt)
-		{
-		case 0:
-			System.out.println("\n");
-			break;
-		case 1://create sales
-			int new_sales_id = (sales.get(sales.size()-1).getSalesID())+1;
-			HashMap <Product ,Integer> product_hmap = new HashMap<>();
-			double total=0;
-			String p_id_string;
-			Product p=null;
-			do 
-			{
-			System.out.println("Product ID(Enter 0 to stop adding product):");
-			p_id_string=input.nextLine();
-			p_id_string=p_id_string.toUpperCase();
-			for(int i=0;i<product.size();i++)			{
-				if(p_id_string.matches(product.get(i).getId()))
-				{
-					p = product.get(i);
-				}
-			}
-			if(p == null)
-				System.out.print("Product id not exist\n");
-			else{
-				if(!p_id_string.matches("0"))
-				{
-					System.out.println("Quantity:");
-					int Quantity = input.nextInt();
-					product_hmap.put(p,Quantity);
-					total+=(p.getUprice()*Quantity);
-				}
-			}
-			}while(!p_id_string.matches("0"));
-			Sales s = new Sales(new_sales_id,product_hmap,total);
-			sales.add(s);
-			userlogfile.put(login, "New Sales Created :" + s.getSalesID());
-			break;
-		case 2:
-			ObjectFile o = new ObjectFile();
-			for(int i=0;i<o.Reader(2).size();i++)
-			{
-				System.out.println(o.Reader(2).get(i).toString());
-			}
-			input.nextLine();
-			break;
-		case 3:
-			System.out.print("Sales ID :");
-			int temp_sales_id = input.nextInt();
-			int checker=0;
-			for(int i=0;i<sales.size();i++)
-			{
-				if(sales.get(i).getSalesID()==(temp_sales_id))
-				{
-					userlogfile.put(login, "Sales Deleted :" + sales.get(i).getSalesID());
-					sales.remove(i);
-				}
-				else
-					checker++;
-			}
-			if (checker==product.size())
-				System.out.println("No Matched ID found");
-			input.nextLine();
-			break;
-		default:
-			System.out.println("Invalid Option");
-			input.nextLine();
-		}
-	}
-	public static void reportEvent(int opt,Login login)
-	{
-		Scanner input = new Scanner(System.in);
-		System.out.println("1.Report By Date\n2.Report By Date Interval");
-		int filter;
-		String strdate=null;
-		String strdate2=null;
-		do{
-		filter = input.nextInt();
-		if(filter==1)
-		{	
-			do{
-			System.out.println("Date (Format must in DD/MM/YYYY):");
-			strdate = input.nextLine();
-			}while(validateDate(strdate));
-			
-		}
-		else if(filter==2)
-		{
-			do{
-				System.out.println("From Date (Format must in DD/MM/YYYY):");
-				strdate = input.nextLine();
-				}while(validateDate(strdate));
-			do{
-				System.out.println("To Date (Format must in DD/MM/YYYY):");
-				strdate2 = input.nextLine();
-				}while(validateDate(strdate2));
-		}
-		else
-			System.out.println("Invalid Option");
-		}while(filter!=1||filter!=2);
-		try{
-		Date date=new SimpleDateFormat("dd/MM/yyyy").parse(strdate);
-		Date date2=new SimpleDateFormat("dd/MM/yyyy").parse(strdate2);
-		switch(opt)
-		{
-		case 1://sales report
-			if(date2==null)
-			{
-				SalesR sales_rep = new SalesR(date);
-			}
-			else
-			{
-				SalesR sales_rep = new SalesR(date,date2);
-			}
-			input.nextLine();
-			break;
-		case 2://stock report
-			System.out.println("Invalid Option");
-			break;
-		case 3://user report
-			if(date!=null)
-			{
-				UserR user_rep = new UserR(date);
-			}
-			else
-			{
-				UserR user_rep = new UserR(date2);
-			}
-			input.nextLine();
-			break;
-		default:
-			System.out.println("Invalid Option");
-			input.nextLine();
-		}
-		}catch(ParseException pe)
-		{
-			System.out.println(pe.getMessage());
-		}
-	}
-	public static void stockEvent(int opt,Login login)
-	{
-		Scanner input = new Scanner(System.in);
-		switch(opt)
-		{
-		
-		}
-	}
-	public static void UserSetting(int opt,Login login)
-	{
+		@SuppressWarnings("resource")
 		Scanner input = new Scanner(System.in);
 		while(true){
 			System.out.printf("1. Edit Username\n");
@@ -356,38 +187,21 @@ public class Main {
 	public static void filingEvent()
 	{
 		ObjectFile o = new ObjectFile();
-		o.S_Writer(sales);
+		o.S_Writer(salesList);
 		o.P_Writer(productList);
 		o.U_Writer(userList);
 		o.U_Writer(userlogfile);
 	}
-	public static boolean validateDate(String strDate)
+	public static void system_init()
 	{
-		/* Check if date is 'null' */
-		if (strDate.trim().equals(""))
-		{
-			System.out.println("Date cannot be null");
-		    return false;
-		}
-		/* Date is not 'null' */
-		else
-		{
-		    SimpleDateFormat sdfrmt = new SimpleDateFormat("dd/MM/yyyy");
-		    sdfrmt.setLenient(false);
-		    try
-		    {
-		        Date javaDate = sdfrmt.parse(strDate); 
-		        System.out.println(strDate+" is valid date format");
-		    }
-		    /* Date format is invalid */
-		    catch (ParseException e)
-		    {
-		        System.out.println(strDate+" is Invalid Date format");
-		        return false;
-		    }
-		    /* Return true if date format is valid */
-		    return true;
-		}
+		ObjectFile o = new ObjectFile();
+		o.Reader(1).forEach((p)->productList.add((Product)p));
+		o.Reader(2).forEach((p)->salesList.add((Receipt)p));
+		o.Reader(3).forEach((p)->userList.add((User)p));
+		o.Map_Reader().forEach((key,value) ->{
+			userlogfile.put(key,value);
+			
+		});
+		
 	}
 }
-

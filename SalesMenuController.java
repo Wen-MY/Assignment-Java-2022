@@ -13,54 +13,28 @@ public class SalesMenuController
 	
 	*/
 	
-	private static Scanner scanner = new Scanner(System.in);
-	private static CheckValid validator = new CheckValid();
+	private Scanner scanner = new Scanner(System.in);
 	
+	// ArrayLists
 	private ArrayList<Product> pList;
 	private ArrayList<Receipt> rList;
-	private String empID;
 	
-	public static void main(String[] args)
-	{	
-		// MAIN FUNCTION IS FOR TESTING PURPOSES ONLY, WILL BE REMOVED SOON
-		// Assuming all the data are read into respective ArrayLists at the beginning of the main menu
-		/*
-		
-			ArrayLists read that are used for sales menu are: Product, Receipt, Transactions
-		
-		*/
-		
-		// THIS PART IS HARDCODED FOR TESTING PURPOSES (for view sales part)
-		ArrayList<Product> testPList = new ArrayList<Product>();
-		ArrayList<Receipt> testRList = new ArrayList<Receipt>();
-		
-		
-		// Creating a controller (this will be done in main menu)
-		SalesMenuController smc = new SalesMenuController(testPList, testRList, "TestEmpID");
-		testPList.add(new Product("Apple", "0001", 2.00, "Fruit"));
-		
-		// Test values
-		for (int i = 0; i < 10; i++)
-		{
-			Receipt tempReceipt = new Receipt("01/01/2022", smc.empID);
-			Transaction tempTransaction1 = new Transaction(1, "Apple", "Fruit", 2.00, 4);
-			
-			tempReceipt.addTransaction(tempTransaction1);
-			testRList.add(tempReceipt);
-		}
-		// TEST PART END
-		
-		smc.showSalesMenu();
-		
-		scanner.close();
-		
-	}
+	// Login details (for record purposes)
+	private Login login;
+	private HashMap <Login, String> userlogfile;
 	
-	public SalesMenuController(ArrayList<Product> _pList, ArrayList<Receipt> _rList, String _empID)
+	// For recording activities performed during the duration of the login
+    public HashMap <Login, String> getUserlogfile(){
+        return userlogfile;
+    }
+	
+	// Constructor
+	public SalesMenuController(ArrayList<Product> _pList, ArrayList<Receipt> _rList, Login _login)
 	{
 		pList = _pList;
 		rList = _rList;
-		empID = _empID;
+		login = _login;
+		userlogfile = new HashMap<Login, String>();
 	}
 	
 	public void showSalesMenu()
@@ -85,104 +59,97 @@ public class SalesMenuController
 		} while (!userInput.equals("4"));
 	}
 	
-	public void addSales()
+	private void addSales()
 	{
 		// add sales method
-		Boolean validDate = false;
 		
 		// Receipt input required
-		String date;
 		
 		// Transaction input required (same variable reused for multiple transactions)
 		String itemName; // Name is used to search for a matching product instance
 		String quantity; // quantity is stored as int data type but read as String and checked during input
+		System.out.println("ADD SALES RECORD");
+	
+		// Create receipt
+		Receipt newReceipt = new Receipt(login.getUser().getID()); // get the id of the user
+		
+		String userInput; // to get user input whether to repeat for multiple transaction or not
+		int transactionNo = 1; // starts from 1 transaction (first tNo set as 1)
 		
 		do
 		{
-			System.out.println("ADD SALES RECORD");
-			System.out.println("Enter Receipt Date (DD/MM/YYYY), EXAMPLE : 01/01/2022: ");
-			date = scanner.nextLine();
+			System.out.println("Entering details for Transaction.");
 			
-			if (date.equals("B"))
-				validDate = true;
-			else if (!validator.validDate(date))
+			// Get input for item name and quantity
+			System.out.println("Enter product name: ");
+			itemName = scanner.nextLine();
+			
+			System.out.println("Enter quantity: ");
+			quantity = scanner.nextLine();
+			
+			// Check if product information entered is valid
+			if (validProductName(itemName) != -1 && isInteger(quantity))
 			{
-				validDate = false;
-				System.out.println("Invalid date format! Please try again.");
-			}
-			else
-			{
-				// Create receipt
-				Receipt newReceipt = new Receipt(date, empID); // SHOULD BE CHANGED TO USE empID OF USER
+				// Get product index 
+				int pID = validProductName(itemName);
 				
-				String userInput; // to get user input whether to repeat for multiple transaction or not
-				validDate = true;
-				int transactionNo = 1; // starts from 1 transaction (first tNo set as 1)
-				do
+				// Check if product has sufficient stock (stock must be more than quantity)
+				if (pList.get(pID).getStock() > 0 && pList.get(pID).getStock() >= Integer.parseInt(quantity))
 				{
-					System.out.println("Entering details for Transaction.");
-					
-					// Get input for item name and quantity
-					System.out.println("Enter product name: ");
-					itemName = scanner.nextLine();
-					
-					System.out.println("Enter quantity: ");
-					quantity = scanner.nextLine();
-					
-					// Check if product information entered is valid
-					if (validator.validProductName(itemName, pList) != -1 && validator.isInteger(quantity))
+					Boolean transactionPerformed = false;
+					// Check if product with same name already exists in transaction
+					for (Transaction t : newReceipt.getTransactionList())
 					{
-						Boolean transactionPerformed = false;
-						// Check if product with same name already exists in transaction
-						for (Transaction t : newReceipt.getTransactionList())
+						if (t.getItem().equals(itemName))
 						{
-							if (t.getItem().equals(itemName))
-							{
-								t.setQuantity(t.getQuantity()+Integer.parseInt(quantity));
-								newReceipt.calculateGrandTotal();
-								System.out.println("Existing transaction of same product found. The quantities will be summed. "
-										+ "Enter any input to add another transaction ((B) - Save and Back)");
-								transactionPerformed = true;
-								break;
-							}
-						}
-						
-						// Create new transaction if existing one is not found
-						if (!transactionPerformed)
-						{
-							// Get product index 
-							int pID = validator.validProductName(itemName, pList);
-							
-							Transaction newTransaction = new Transaction(transactionNo, itemName, pList.get(pID).getProductType(), pList.get(pID).getPrice(), Integer.parseInt(quantity));
-							newReceipt.addTransaction(newTransaction);
-							
-							transactionNo++; // add to transaction counter
-							System.out.println("Transaction added successfully. Enter any input to add another transaction ((B) - Save and Back)");
-						
+							t.setQuantity(t.getQuantity()+Integer.parseInt(quantity));
+							newReceipt.calculateGrandTotal();
+							System.out.println("Existing transaction of same product found. The quantities will be summed. "
+									+ "Enter any input to add another transaction ((B) - Save and Back)");
+							transactionPerformed = true;
+							break;
 						}
 					}
-					else
-						System.out.println("Product name or quantity is invalid. Enter any input to try again. ((B) - Back)");
 					
-					userInput = scanner.nextLine();
+					// Create new transaction if existing one is not found
+					if (!transactionPerformed)
+					{
+						
+						Transaction newTransaction = new Transaction(transactionNo, itemName, pList.get(pID).getProductType(), pList.get(pID).getPrice(), Integer.parseInt(quantity));
+						newReceipt.addTransaction(newTransaction);
+						
+						transactionNo++; // add to transaction counter
+						System.out.println("Transaction added successfully. Enter any input to add another transaction ((B) - Save and Back)");
 					
-				} while (!userInput.equals("B"));
-				
-				// Add the new receipt if it's not empty (Grand Total will be more than 0)
-				if (newReceipt.getTransactionList().size() != 0)
-					rList.add(newReceipt);
-				
+					}
+					
+					// Update the stock count after recording the transaction (Original stock count - quantity)
+					pList.get(pID).updateStock(pList.get(pID).getStock()-Integer.parseInt(quantity));
+				}
+				else
+					System.out.println("Insufficient stock! Unable to create sales record. Enter any input to try again. ((B) - Back)");
 			}
+			else
+				System.out.println("Product name or quantity is invalid. Enter any input to try again. ((B) - Back)");
 			
-		} while (!validDate);
+			userInput = scanner.nextLine();
+			
+		} while (!userInput.equals("B"));
+		
+		// Add the new receipt if it's not empty
+		if (newReceipt.getTransactionList().size() != 0)
+		{
+			rList.add(newReceipt);
+			userlogfile.put(login, "Recorded Receipt: "+ newReceipt.getReceiptID());
+		}
 		
 	}
-	
-	public void viewSales()
+		
+	private void viewSales()
 	{
 		// view sales method
 		
-		int pageStartIndex = 1; // Start from page 1
+		int pageStartIndex = 1; // Start from page 1 (10 results are shown on each page)
 		
 		String userInput;
 		
@@ -190,7 +157,7 @@ public class SalesMenuController
 		{
 			// UI
 			System.out.println("SALES HISTORY");
-			System.out.printf("%36s | %10s | %11s\n", "Receipt ID", "Date", "Employee ID");
+			System.out.printf("%36s | %23s | %11s\n", "Receipt ID", "Date and Time", "Employee ID");
 			
 			for (int i = ((pageStartIndex-1)*10); i < (pageStartIndex*10); i++) // show 10 records in a page
 			{
@@ -221,7 +188,7 @@ public class SalesMenuController
 				break;
 			default:
 				// Check if user input is a valid receipt ID here (If yes, display)
-				int idx = validator.validReceiptID(userInput, rList); // -1 if invalid ID
+				int idx = validReceiptID(userInput); // -1 if invalid ID
 				if (idx != -1)
 					System.out.println(rList.get(idx).toString());
 				else if (userInput.equals("B"))
@@ -239,7 +206,7 @@ public class SalesMenuController
 		
 	}
 	
-	public void editSales() // edit sales method
+	private void editSales() // edit sales method
 	{
 		/*
 			EDIT OPTIONS (Other than (B) - Back)
@@ -256,7 +223,6 @@ public class SalesMenuController
 			System.out.println("Enter an existing receipt ID to edit (or (B) - Back): ");
 			
 			userInput = scanner.nextLine();
-			
 			for (Receipt r : rList) // If receipt ID exists, display its details and give edit options
 			{
 				if (userInput.equals(r.getReceiptID()))
@@ -266,21 +232,25 @@ public class SalesMenuController
 					do 
 					{
 						System.out.println(r.toString());
-						System.out.println("Edit options:\n(1) - Edit Date\n(2) - Add Transaction\n"
+						System.out.println("Edit options:\n(1) - Update Date\n(2) - Add Transaction\n"
 								+ "(3) - Remove Transaction\n(4) - Delete Receipt");
 						System.out.println("Enter option (or (B) - Back): ");
 						editOption = scanner.nextLine();
 						
 						switch (editOption)
 						{
-						case "1": // Edit Date
-							System.out.println("Enter new date (DD/MM/YYYY), EXAMPLE: 01/01/2022: ");
-							String newDate = scanner.nextLine();
+						case "1": // Update Date
+							System.out.println("Are you sure you would like to update the current date? (Y) - Yes / (Any other input) - No: ");
+							String confirm = scanner.nextLine();
 							
-							if (validator.validDate(newDate))
-								r.setDate(newDate);
+							if (confirm.contentEquals("Y"))
+							{
+								r.setDate();
+								// Record the activity of editing date
+								userlogfile.put(login, "Updated date of Receipt ID: "+ r.getReceiptID());
+							}
 							else
-								System.out.println("Invalid date format! Please try again.");
+								System.out.println("Receipt date has not been changed. Returning to previous menu....");
 							break;
 							
 						case "2": // Add Transaction
@@ -298,28 +268,46 @@ public class SalesMenuController
 							quantity = scanner.nextLine();
 							
 							// Check if product information entered is valid
-							if (validator.validProductName(itemName, pList) != -1 && validator.isInteger(quantity))
+							if (validProductName(itemName) != -1 && isInteger(quantity))
 							{
-								// Check if product with same name already exists in transaction
-								for (Transaction t : r.getTransactionList())
+								// Get product index 
+								int pID = validProductName(itemName);
+								
+								// Check if product has sufficient stock (stock must be more than quantity)
+								if (pList.get(pID).getStock() > 0 && pList.get(pID).getStock() >= Integer.parseInt(quantity))
 								{
-									if (t.getItem().equals(itemName))
+									Boolean transactionPerformed = false;
+									// Check if product with same name already exists in transaction
+									for (Transaction t : r.getTransactionList())
 									{
-										t.setQuantity(t.getQuantity()+Integer.parseInt(quantity));
-										r.calculateGrandTotal();
-										break;
+										if (t.getItem().equals(itemName))
+										{
+											t.setQuantity(t.getQuantity()+Integer.parseInt(quantity));
+											r.calculateGrandTotal();
+											System.out.println("Existing transaction of same product found. The quantities will be summed.");
+											transactionPerformed = true;
+											break;
+										}
 									}
-									else
+									
+									// Create new transaction if existing one is not found
+									if (!transactionPerformed)
 									{
-										// Get product index 
-										int pID = validator.validProductName(itemName, pList);
 										
 										Transaction newTransaction = new Transaction(r.getTransactionList().size()+1, itemName, pList.get(pID).getProductType(), pList.get(pID).getPrice(), Integer.parseInt(quantity));
 										r.addTransaction(newTransaction);
-										
 										System.out.println("Transaction added successfully.");
+									
 									}
+									
+									// Update the stock count after recording the transaction (Original stock count - quantity)
+									pList.get(pID).updateStock(pList.get(pID).getStock()-Integer.parseInt(quantity));
+									
+									// Record the activity of editing transaction
+									userlogfile.put(login, "Modified Transaction of Receipt ID: "+ r.getReceiptID());
 								}
+								else
+									System.out.println("Insufficient stock! Unable to create new transaction.");
 							}
 							else
 								System.out.println("Product name or quantity is invalid.");
@@ -339,21 +327,28 @@ public class SalesMenuController
 							System.out.println("Enter transaction No. to remove: ");
 							String tNo = scanner.nextLine();
 							
-							if (validator.isInteger(tNo))
+							if (isInteger(tNo))
 							{
-								Boolean reduceNo = false; // If true, the iteration will reduce tNo by 1
-								for (int i = 0; i < tList.size(); i++)
+								if (Integer.parseInt(tNo) > 0 && Integer.parseInt(tNo) <= tList.size())
 								{
-									if (Integer.parseInt(tNo) == tList.get(i).getTransactionNo())
+									Boolean reduceNo = false; // If true, the iteration will reduce tNo by 1
+									for (int i = 0; i < tList.size(); i++)
 									{
-										tList.remove(i);
-										reduceNo = true;
+										if (Integer.parseInt(tNo) == tList.get(i).getTransactionNo())
+										{
+											tList.remove(i);
+											reduceNo = true;
+										}
+										
+										if (reduceNo)
+											tList.get(i).setTransactionNo(tList.get(i).getTransactionNo()-1);
+										
 									}
-									
-									if (reduceNo)
-										tList.get(i).setTransactionNo(tList.get(i).getTransactionNo()-1);
-									
+									// Record the activity of editing transaction
+									userlogfile.put(login, "Modified Transaction of Receipt ID: "+ r.getReceiptID());
 								}
+								else
+									System.out.println("Invalid input! Please try again.");
 							}
 							else
 								System.out.println("Invalid input! Please try again.");
@@ -369,6 +364,10 @@ public class SalesMenuController
 								rList.remove(r);
 								System.out.println("Receipt deleted successfully.");
 								deleted = true;
+								
+								// Record the activity of deleting the receipt
+								userlogfile.put(login, "Deleted Receipt ID: "+ r.getReceiptID());
+								
 							}
 							else
 								System.out.println("Receipt deletion cancelled.");
@@ -387,4 +386,47 @@ public class SalesMenuController
 		} while (!userInput.equals("B"));
 		
 	}
+	
+	// Validation methods required
+	
+	private Boolean isInteger(String value)
+	{
+		// Checks if a String value is integer
+		Boolean validity = true;
+		try
+		{
+		    Integer.parseInt(value);
+		}
+		catch (NumberFormatException ex) {
+		    validity = false;
+		}
+		return validity;
+	}
+	
+	private int validReceiptID(String id)
+	{
+		int index = -1;
+		
+		// Search if receipt id exists in receipt ArrayList, and returns index (otherwise, return -1)
+		
+		for (int i = 0; i < rList.size(); i++)
+			if (rList.get(i).getReceiptID().equals(id))
+				index = i;
+		
+		return index;
+		
+	}
+	
+	private int validProductName(String itemName)
+	{
+		 int index = -1;
+		
+		// Search in product list to check whether the product exists or not, and returns index (-1 if does not exist)
+		for (int i = 0; i < pList.size(); i++)
+			if (pList.get(i).getName().equals(itemName))
+				index = i;
+		
+		return index;
+	}
+	
 }

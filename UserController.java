@@ -54,8 +54,6 @@ public class UserController{
                 input.nextLine();
             }
             else if (choice ==4){
-                System.out.printf("\nPress Enter to continue...");
-                input.nextLine();
                 break;
             }
             else{
@@ -158,27 +156,24 @@ public class UserController{
         user.setPassword(password1);
     }
     public void setUserType(User user){
-        boolean valid = false;
-        int choice;
+        int choice=0;
         do{ 
             System.out.printf("Please choose user Type: \n");
             System.out.printf("1. Admin\n");
             System.out.printf("2. Staff\n");
             System.out.printf("3. Cashier\n");
             System.out.printf(">>> ");
-            while(true){
                 try{
                     choice = Integer.parseInt(input.nextLine());
-                    break;
+                    if(choice<1 || choice>3)
+                        System.out.printf("Invalid Input\n\n");
                 } catch (NumberFormatException ex){
                     System.out.printf("Integer Input Required\n");
                 }
-            }
-            if(choice<1 || choice>3){
-                System.out.printf("Invalid Input\n\n");
-            }
-        } while (!valid);
+    
+        	} while (choice<1 || choice>3);
         user.setUserType(choice);
+        
     }
     public void addUser(){
         System.out.printf("Please insert the details of the user.\n");
