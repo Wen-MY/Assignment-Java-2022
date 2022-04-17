@@ -12,6 +12,7 @@ public class Main {
 	public static void main(String [] args)
 	{
 		Scanner s = new Scanner(System.in);
+		
 		system_init();
 		Login login;
 		if(userList.isEmpty())
@@ -34,55 +35,87 @@ public class Main {
 		
 		
 		int menuopt;
-		do{
-			adminmenu();
-			
+		if(login.getUser().getUserTypeInt() == 1)
+		{
+		try {
+			do{
+				adminmenu();
+				
+					menuopt = Integer.parseInt(s.nextLine());
+					if(menuopt!=0)
+					{
+						switch(menuopt)
+						{
+						case 1:
+							UserController manageUser = new UserController(userList, login);
+							manageUser.menu();
+							if(manageUser.getUserlogfile()!= null)
+								manageUser.getUserlogfile().forEach(
+										(key,value) -> userlogfile.merge(key,value,(v1,v2) -> v1)
+										);
+							break;
+						case 2://sales event
+							SalesMenuController manageSales = new SalesMenuController(productList,salesList, login);
+							manageSales.showSalesMenu();
+							if (manageSales.getUserlogfile() != null)
+								manageSales.getUserlogfile().forEach(
+										(key,value) -> userlogfile.merge(key,value,(v1,v2) -> v1)
+										);
+							break;
+						case 3:
+							ProductController manageProduct = new ProductController(productList, login);
+							manageProduct.menu();
+							if(manageProduct.getUserlogfile()!= null)
+								manageProduct.getUserlogfile().forEach(
+										(key,value) -> userlogfile.merge(key,value,(v1,v2) -> v1)
+										);
+							break;
+						case 4:
+							ReportEvent e =new ReportEvent(salesList,userlogfile);
+							e.Event();
+							break;
+						case 5:
+							System.out.println("Invalid Option");
+							break;
+						case 6:
+							UserSetting(login);
+							break;
+						default:
+							System.out.println("Invalid Option");
+						}
+					}
+					else
+					{
+						filingEvent();
+						System.out.println("Exiting...All Event Saved.");
+						menuopt=0;
+					}
+				
+			}while(menuopt!=0);
+		}catch(NumberFormatException nfe)
+		{
+			nfe.getMessage();
+			System.out.println("Invalid Option");
+		}
+		}
+		else
+		{
+			usermenu();
 			menuopt = Integer.parseInt(s.nextLine());
-			if(menuopt!=0)
+			switch(menuopt)
 			{
-				switch(menuopt)
-				{
-				case 1:
-					UserController manageUser = new UserController(userList, login);
-					manageUser.menu();
-					if(manageUser.getUserlogfile()!= null)
-						userlogfile.putAll(manageUser.getUserlogfile());
-					break;
-				case 2://sales event
-					SalesMenuController manageSales = new SalesMenuController(productList,salesList, login);
-					manageSales.showSalesMenu();
-					if (manageSales.getUserlogfile() != null)
-						userlogfile.putAll(manageSales.getUserlogfile());
-					break;
-				case 3:
-					ProductController manageProduct = new ProductController(productList, login);
-					manageProduct.menu();
-					if(manageProduct.getUserlogfile()!= null)
-						userlogfile.putAll(manageProduct.getUserlogfile());
-					break;
-				case 4:
-					ReportEvent e =new ReportEvent(salesList,userlogfile);
-					e.Event();
-					break;
-				case 5:
-					System.out.println("Invalid Option");
-					break;
-				case 6:
-					UserSetting(login);
-					break;
-				default:
-					System.out.println("Invalid Option");
-				}
+			case 1:
+				SalesMenuController manageSales = new SalesMenuController(productList,salesList, login);
+				manageSales.addSales();
+				break;
+			case 2:
+				
+				break;
+			case 3:
+				UserSetting(login);
 			}
-			else
-			{
-				filingEvent();
-				System.out.println("Exiting...All Event Saved.");
-				menuopt=0;
-			}
-			
-		}while(menuopt!=0);
-	}
+		}
+		}
 	
 	public static void adminmenu()
 	{
