@@ -3,7 +3,7 @@ import java.util.*;
 
 public class ProductController{
     private Login login;
-    private HashMap <Timestamp,String> userlogfile = new HashMap<Timestamp,String>();
+    private HashMap <Timestamp,String> userlogfile;
     private ArrayList <Product> productList;
     Scanner input = new Scanner(System.in);
 
