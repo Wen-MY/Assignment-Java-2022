@@ -101,9 +101,15 @@ public class Main {
 		else
 		{
 			usermenu();
+			try {
+			do {
+				
 			menuopt = Integer.parseInt(s.nextLine());
 			switch(menuopt)
 			{
+			case 0:
+				filingEvent();
+				System.out.println("Exiting...All Event Saved.");
 			case 1:
 				SalesMenuController manageSales = new SalesMenuController(productList,salesList, login);
 				manageSales.addSales();
@@ -113,9 +119,18 @@ public class Main {
 				break;
 			case 3:
 				UserSetting(login);
+				break;
+			default:
+				System.out.println("Invalid Option");
 			}
+			}while(menuopt!=0);
+		}catch(NumberFormatException nfe)
+		{
+			nfe.getMessage();
+			System.out.println("Invalid Option");
 		}
 		}
+	}
 	
 	public static void adminmenu()
 	{
