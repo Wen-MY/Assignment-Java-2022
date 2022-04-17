@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -10,9 +11,9 @@ import java.time.format.DateTimeFormatter;
 public class ReportEvent {
 	
 	private ArrayList <Receipt> sales;
-	private HashMap <Login,String> userlogfile;
+	private HashMap <Timestamp,String> userlogfile;
 	Scanner input = new Scanner(System.in);
-	public ReportEvent(ArrayList <Receipt> sales,HashMap <Login,String> userlogfile)
+	public ReportEvent(ArrayList <Receipt> sales,HashMap <Timestamp,String> userlogfile)
 	{
 		this.sales=sales;
 		this.userlogfile=userlogfile;
@@ -119,7 +120,7 @@ public class ReportEvent {
 		
 		}while(loop);
 	}
-	public HashMap <Login, String> getUserlogfile(){
+	public HashMap <Timestamp,String> getUserlogfile(){
         return userlogfile;
     }
 
