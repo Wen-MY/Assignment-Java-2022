@@ -1,6 +1,5 @@
 
 import java.util.*;
-import java.io.*;
 import java.sql.Timestamp;
 public class Main {
     
@@ -10,191 +9,147 @@ public class Main {
     static HashMap <Timestamp,String> userlogfile = new HashMap<>();
     static Scanner input = new Scanner(System.in);
     
-    @SuppressWarnings("resource")
-    public static void main(String [] args)
-    {
-        Scanner s = new Scanner(System.in);
-        
+    public static void main(String [] args){        
         system_init();
         Login login;
         
-        while(true)
-        {
-        if(userList.isEmpty())
-        {
+        if(userList.isEmpty()){
             User admin = new User (1,"Admin","Admin");
             userList.add(admin);
-            //login = new Login(admin); for testing purpose
         }
-        
-        do{
+        while (true){
             System.out.print("Username :");
-            String username= s.nextLine();
+            String username= input.nextLine();
             System.out.print("Password :");
-            String password= s.nextLine();
+            String password= input.nextLine();
             login = new Login(new User(username,password));
-            if(!login.validation(userList))
-                System.out.println("Username or Password Wrong");	
-        }while (!login.validation(userList));
+            if(!login.validation(userList)){
+                System.out.println("Username or Password Wrong");
+            }	
+            else{
+                break;
+            }
+        }
         userlogfile.put(new Timestamp(System.currentTimeMillis()),"Login|"+login.getUser().getID());
         
-        
-        int menuopt;
-        if(login.getUser().getUserTypeInt() == 1)
-        {
-        try {
-            do{
+        String choice;
+        if(login.getUser().getUserType().equals("admin")){
+            while (true){
                 adminmenu();
-                
-                    menuopt = Integer.parseInt(s.nextLine());
-                    if(menuopt!=0)
-                    {
-                        switch(menuopt)
-                        {
-                        case 1:
-                            UserController manageUser = new UserController(userList, login);
-                            manageUser.menu();
-                            if(manageUser.getUserlogfile()!= null)
-                            {
-                                manageUser.getUserlogfile().forEach(
-                                        (key,value) -> userlogfile.put(key,value)
-                                        );
-                            }
-                            break;
-                        case 2://sales event
-                            SalesMenuController manageSales = new SalesMenuController(productList,salesList, login);
-                            manageSales.showSalesMenu();
-                            if (manageSales.getUserlogfile() != null)
-                            {
-                                manageSales.getUserlogfile().forEach(
-                                        (key,value) -> userlogfile.put(key,value)
-                                        );
-                            }
-                            break;
-                        case 3:
-                            ProductController manageProduct = new ProductController(productList, login);
-                            manageProduct.menu();
-                            if(manageProduct.getUserlogfile()!= null)
-                            {
-                                manageProduct.getUserlogfile().forEach(
-                                        (key,value) -> userlogfile.put(key,value)
-                                        );
-                            }
-                            break;
-                        case 4:
-                            ReportEvent e =new ReportEvent(salesList,userlogfile);
-                            e.Event();
-                            break;
-                        case 5:
-                            stockManagement(login);
-                            break;
-                        case 6:
-                            UserSetting(login);
-                            break;
-                        default:
-                            System.out.println("Invalid Option");
-                        }
-                    }
-                    else
-                    {
-                        filingEvent();
-                        System.out.println("Exiting...All Event Saved.");
-                        menuopt=0;
-                    }
-                
-            }while(menuopt!=0);
-        }catch(NumberFormatException nfe)
-        {
-            nfe.getMessage();
-            System.out.println("Invalid Option");
-        }
-        }
-        else if(login.getUser().getUserTypeInt() == 2)
-        {
-            usermenu();
-            try {
-            do {
-                
-            menuopt = Integer.parseInt(s.nextLine());
-            switch(menuopt)
-            {
-            case 0:
-                filingEvent();
-                System.out.println("Exiting...All Event Saved.");
-            case 1:
-                SalesMenuController manageSales = new SalesMenuController(productList,salesList, login);
-                manageSales.addSales();
-                if (manageSales.getUserlogfile() != null)
-                {
-                    manageSales.getUserlogfile().forEach(
+                choice = input.nextLine();
+                if(choice.equals("1")){
+                    UserController manageUser = new UserController(userList, login);
+                    manageUser.menu();
+                    if(manageUser.getUserlogfile()!= null){
+                        manageUser.getUserlogfile().forEach(
                             (key,value) -> userlogfile.put(key,value)
-                            );
+                        );
+                    }
                 }
-            case 2:
-                
-                break;
-            case 3:
-                UserSetting(login);
-                break;
-            default:
-                System.out.println("Invalid Option");
+                else if(choice.equals("2")){
+                    SalesMenuController manageSales = new SalesMenuController(productList,salesList, login);
+                    manageSales.showSalesMenu();
+                    if (manageSales.getUserlogfile() != null)
+                    {
+                        manageSales.getUserlogfile().forEach(
+                            (key,value) -> userlogfile.put(key,value)
+                        );
+                    }
+                }
+                else if(choice.equals("3")){
+                    ProductController manageProduct = new ProductController(productList, login);
+                    manageProduct.menu();
+                    if(manageProduct.getUserlogfile()!= null){
+                        manageProduct.getUserlogfile().forEach(
+                            (key,value) -> userlogfile.put(key,value)
+                        );
+                    }
+                }
+                else if(choice.equals("4")){
+                    ReportEvent e =new ReportEvent(salesList, userlogfile);
+                    e.Event();
+                }
+                else if(choice.equals("5")){
+                    stockManagement(login);
+                }
+                else if (choice.equals("0")){
+                    System.out.printf("Exiting...\n");
+                    fillingEvent();
+                    System.out.printf("Data Saved\n");
+                    System.out.printf("Press Enter to continue...");
+                    input.nextLine();
+                    break;
+                } 
+                else{
+                    System.out.printf("\nInvalid Input\n");
+                }
             }
-            }while(menuopt!=0);
-        }catch(NumberFormatException nfe)
-        {
-            nfe.getMessage();
-            System.out.println("Invalid Option");
         }
+        else if(login.getUser().getUserType().equals("staff")){
+            while (true){
+                usermenu();
+                choice = input.nextLine();
+                if (choice.equals("1")){
+                    SalesMenuController manageSales = new SalesMenuController(productList,salesList, login);
+                    manageSales.addSales();
+                    if (manageSales.getUserlogfile() != null){
+                        manageSales.getUserlogfile().forEach(
+                            (key,value) -> userlogfile.put(key,value)
+                        );
+                    }
+                }
+                else if (choice.equals("2")){
+                    stockManagement(login);
+                }
+                else if (choice.equals("3")){
+                    UserSetting(login);
+                }
+                else if (choice.equals("0")){
+                    System.out.printf("Exiting...\n");
+                    fillingEvent();
+                    System.out.printf("Data Saved\n");
+                    System.out.printf("Press Enter to continue...");
+                    input.nextLine();
+                    break;
+                }
+            }
         }
-        else
-        {
+        else{
             SalesMenuController manageSales = new SalesMenuController(productList,salesList, login);
             manageSales.addSales();
             if (manageSales.getUserlogfile() != null)
             {
                 manageSales.getUserlogfile().forEach(
-                        (key,value) -> userlogfile.put(key,value)
-                        );
+                    (key,value) -> userlogfile.put(key,value)
+                );
             }
         }
-        }
     }
     
-    public static void adminmenu()
-    {
-        System.out.println("1.User Management");
-        System.out.println("2.Sales Management");
-        System.out.println("3.Product Management");
-        System.out.println("4.Report Management");
-        System.out.println("5.Update stock");
-        System.out.println("6.Account Setting");
-        System.out.println("0.Exit");
+    public static void adminmenu(){
+        System.out.printf("1.User Management\n");
+        System.out.printf("2.Sales Management\n");
+        System.out.printf("3.Product Management\n");
+        System.out.printf("4.Report Management\n");
+        System.out.printf("5.Update stock\n");
+        System.out.printf("6.Account Setting\n");
+        System.out.printf("0.Exit\n");
     }
-    public static void usermenu()
-    {
-        System.out.println("1.Create sales");
-        System.out.println("2.Update stock");
-        System.out.println("3.Account Setting");
-        System.out.println("0.Exit");
+    public static void usermenu(){
+        System.out.printf("1.Create sales\n");
+        System.out.printf("2.Update stock\n");
+        System.out.printf("3.Account Setting\n");
+        System.out.printf("0.Exit\n");
     }
     
-    public static void UserSetting(Login login)
-    {	
+    public static void UserSetting(Login login){	
         while(true){
             System.out.printf("1. Edit Username\n");
             System.out.printf("2. Edit Password\n");
-            System.out.printf("3. Back to Menu\n");
-            int choice;
-            while(true){
-                try{
-                    choice = Integer.parseInt(input.nextLine());
-                    break;
-                } catch (NumberFormatException ex){
-                    System.out.printf("Integer Input Required\n");
-                }
-            }
+            System.out.printf("0. Back to Menu\n");
+            String choice = input.nextLine();
 
-            if(choice == 1){
+            if(choice.equals("1")){
                 String initName = login.getUser().getID();
                 System.out.printf("New Username: ");
                 String username = input.nextLine();
@@ -203,40 +158,42 @@ public class Main {
                 System.out.printf("Press enter to continue...");
                 input.nextLine();
 
-                userlogfile.put(new Timestamp(System.currentTimeMillis()), "Account name changed: "+initName+ " to " +login.getUser().getID());
+                userlogfile.put(
+                    new Timestamp(System.currentTimeMillis()), 
+                    "Account name changed: "+initName+ " to " +login.getUser().getID()
+                );
                 break;
             }
-            else if(choice == 2){
+            else if(choice.equals("2")){
                 String initPassword = login.getUser().getPassword();
-                Console console = System.console();
                 String password1, password2;
-                boolean valid = false;
-                do{
-                    do{
+                while (true){
+                    while (true){
                         System.out.printf("\nNew password (minimum 8 characters)\n: ");
-                        password1 = new String(console.readPassword());
+                        password1 = input.nextLine();
                         if (password1.length()<8){
                             System.out.printf("\nPassword must have at least 8 characters\n");
                         }
-                    }while(password1.length()<8);
-
+                        else{
+                            break;
+                        }
+                    }
                     System.out.printf("\nPlease insert again\n: ");
-                    password2 = new String(console.readPassword());
+                    password2 = input.nextLine();
 
                     if (password1.equals(password2)){
-                        valid = true;
+                        break;
                     }
                     else{
                         System.out.printf("\nPassword does not match\n");
                         System.out.printf("Please try again\n");
                     }
-                }while(!valid);
-
-                System.out.printf("Username changed successfully\n");
+                }
+                login.getUser().setPassword(password1);
+                System.out.printf("Password changed successfully\n");
                 System.out.printf("Press enter to continue...");
                 input.nextLine();
-
-                login.getUser().setPassword(password1);
+                
                 userlogfile.put(
                     new Timestamp(System.currentTimeMillis()), 
                     String.format(
@@ -246,7 +203,7 @@ public class Main {
                 );
                 break;
             }
-            else if(choice == 3){
+            else if(choice.equals("0")){
                 System.out.printf("Press enter to continue...");
                 input.nextLine();
                 break;
@@ -294,24 +251,20 @@ public class Main {
         System.out.printf("Press Enter to continue...");
         input.nextLine();
     }
-    public static void filingEvent()
-    {
+    public static void fillingEvent(){
         ObjectFile o = new ObjectFile();
         o.S_Writer(salesList);
         o.P_Writer(productList);
         o.U_Writer(userList);
         o.U_Writer(userlogfile);
     }
-    public static void system_init()
-    {
+    public static void system_init(){
         ObjectFile o = new ObjectFile();
         o.Reader(1).forEach((p)->productList.add((Product)p));
         o.Reader(2).forEach((p)->salesList.add((Receipt)p));
         o.Reader(3).forEach((p)->userList.add((User)p));
-        o.Map_Reader().forEach((key,value) ->{
-            userlogfile.put(key,value);
-            
-        });
-        
+        o.Map_Reader().forEach(
+            (key,value) -> userlogfile.put(key,value)
+        );
     }
 }
