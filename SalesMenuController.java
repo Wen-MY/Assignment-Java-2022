@@ -59,7 +59,7 @@ public class SalesMenuController
 		} while (!userInput.equals("4"));
 	}
 	
-	private void addSales()
+	public void addSales()
 	{
 		// add sales method
 		
