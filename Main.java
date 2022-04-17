@@ -1,12 +1,13 @@
 
 import java.util.*;
 import java.io.*;
+import java.sql.Timestamp;
 public class Main {
 	
 	static ArrayList <User> userList = new ArrayList<>();
 	static ArrayList <Product> productList = new ArrayList<>();
 	static ArrayList <Receipt> salesList = new ArrayList<>();
-	static HashMap <Login,String> userlogfile = new HashMap<>();
+	static HashMap <Timestamp,String> userlogfile = new HashMap<>();
 	
 	@SuppressWarnings("resource")
 	public static void main(String [] args)
@@ -31,7 +32,7 @@ public class Main {
 			if(!login.validation(userList))
 				System.out.println("Username or Password Wrong");	
 		}while (!login.validation(userList));
-		userlogfile.put(login,"Login\t\t\t");
+		userlogfile.put(new Timestamp(System.currentTimeMillis()),"Login|"+login.getUser());
 		
 		
 		int menuopt;
@@ -183,7 +184,7 @@ public class Main {
 				System.out.printf("Press enter to continue...");
 				input.nextLine();
 
-				userlogfile.put(login, "Account name changed: "+initName+ " to " +login.getUser().getID());
+				userlogfile.put(new Timestamp(System.currentTimeMillis()), "Account name changed: "+initName+ " to " +login.getUser().getID()+'|'+login.getUser());
 				break;
 			}
 			else if(choice == 2){
@@ -218,10 +219,10 @@ public class Main {
 
 				login.getUser().setPassword(password1);
 				userlogfile.put(
-					login, 
+					new Timestamp(System.currentTimeMillis()), 
 					String.format(
-						"Account Password changed: '%s' to '%s'",
-						initPassword, password1
+						"Account Password changed: '%s' to '%s'%s",
+						initPassword, password1 ,login.getUser()
 					)
 				);
 				break;
