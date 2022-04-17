@@ -69,20 +69,6 @@ public class Receipt implements Serializable
 		calculateGrandTotal(); // Grant total is recalculated when transactions within receipt are modified
 	}
 	
-	public void removeTransaction(int tNo)
-	{
-		// Removes transaction from receipt by ID
-		for (Transaction t: tList)
-		{
-			if (t.getTransactionNo() == (tNo))
-			{
-				int index = tList.indexOf(t);
-				tList.remove(index);
-			}
-		}
-		calculateGrandTotal();
-	}
-	
 	public void calculateGrandTotal()
 	{
 		// Calculate grand total
@@ -108,8 +94,8 @@ public class Receipt implements Serializable
 				rID, date, empID);
 		
 		// Stores transaction information
-		String tString = String.format("Transactions included:\n%5s | %20s | %12s | %11s | %5s | %11s\n",
-				"No.", "Item", "Product Type", "Price (RM)", "Quantity", "Total Price (RM)"); 
+		String tString = String.format("Transactions included:\n%5s | %8s | %20s | %12s | %11s | %5s | %11s\n",
+				"No.", "Item ID", "Item Name", "Product Type", "Price (RM)", "Quantity", "Total Price (RM)"); 
 
 		// Loop through all transaction and add their information to the tString
 		for (Transaction t : tList)

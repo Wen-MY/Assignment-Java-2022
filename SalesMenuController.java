@@ -67,7 +67,7 @@ public class SalesMenuController
 		// Receipt input required
 		
 		// Transaction input required (same variable reused for multiple transactions)
-		String itemName; // Name is used to search for a matching product instance
+		String itemID; // ID is used to search for a matching product instance
 		String quantity; // quantity is stored as int data type but read as String and checked during input
 		System.out.println("ADD SALES RECORD");
 	
@@ -81,27 +81,27 @@ public class SalesMenuController
 		{
 			System.out.println("Entering details for Transaction.");
 			
-			// Get input for item name and quantity
-			System.out.println("Enter product name: ");
-			itemName = scanner.nextLine();
+			// Get input for item ID and quantity
+			System.out.println("Enter product ID: ");
+			itemID = scanner.nextLine();
 			
 			System.out.println("Enter quantity: ");
 			quantity = scanner.nextLine();
 			
 			// Check if product information entered is valid
-			if (validProductName(itemName) != -1 && isInteger(quantity))
+			if (validProductID(itemID) != -1 && isInteger(quantity))
 			{
 				// Get product index 
-				int pID = validProductName(itemName);
+				int pID = validProductID(itemID);
 				
 				// Check if product has sufficient stock (stock must be more than quantity), quantity must be a positive integer
 				if (pList.get(pID).getStock() > 0  && Integer.parseInt(quantity) > 0 && pList.get(pID).getStock() >= Integer.parseInt(quantity))
 				{
 					Boolean transactionPerformed = false;
-					// Check if product with same name already exists in transaction
+					// Check if product with same ID already exists in transaction
 					for (Transaction t : newReceipt.getTransactionList())
 					{
-						if (t.getItem().equals(itemName))
+						if (t.getItem().equals(itemID))
 						{
 							t.setQuantity(t.getQuantity()+Integer.parseInt(quantity));
 							newReceipt.calculateGrandTotal();
@@ -116,7 +116,7 @@ public class SalesMenuController
 					if (!transactionPerformed)
 					{
 						
-						Transaction newTransaction = new Transaction(transactionNo, itemName, pList.get(pID).getProductType(), pList.get(pID).getPrice(), Integer.parseInt(quantity));
+						Transaction newTransaction = new Transaction(transactionNo, itemID, pList.get(pID).getName(), pList.get(pID).getProductType(), pList.get(pID).getPrice(), Integer.parseInt(quantity));
 						newReceipt.addTransaction(newTransaction);
 						
 						transactionNo++; // add to transaction counter
@@ -131,7 +131,7 @@ public class SalesMenuController
 					System.out.println("Insufficient stock! Unable to create sales record. Enter any input to try again. ((B) - Back)");
 			}
 			else
-				System.out.println("Product name or quantity is invalid. Enter any input to try again. ((B) - Back)");
+				System.out.println("Product ID or quantity is invalid. Enter any input to try again. ((B) - Back)");
 			
 			userInput = scanner.nextLine();
 			
@@ -258,30 +258,30 @@ public class SalesMenuController
 							// Similar process to addSales but only allow one at a time
 							System.out.println("Creating new transaction...");
 							
-							String itemName;
+							String itemID;
 							String quantity;
 							
-							// Get input for item name and quantity
-							System.out.println("Enter product name: ");
-							itemName = scanner.nextLine();
+							// Get input for item ID and quantity
+							System.out.println("Enter product ID: ");
+							itemID = scanner.nextLine();
 							
 							System.out.println("Enter quantity: ");
 							quantity = scanner.nextLine();
 							
 							// Check if product information entered is valid
-							if (validProductName(itemName) != -1 && isInteger(quantity))
+							if (validProductID(itemID) != -1 && isInteger(quantity))
 							{
 								// Get product index 
-								int pID = validProductName(itemName);
+								int pID = validProductID(itemID);
 								
 								// Check if product has sufficient stock (stock must be more than quantity), quantity must be a positive integer
 								if (pList.get(pID).getStock() > 0  && Integer.parseInt(quantity) > 0 && pList.get(pID).getStock() >= Integer.parseInt(quantity))
 								{
 									Boolean transactionPerformed = false;
-									// Check if product with same name already exists in transaction
+									// Check if product with same ID already exists in transaction
 									for (Transaction t : r.getTransactionList())
 									{
-										if (t.getItem().equals(itemName))
+										if (t.getItem().equals(itemID))
 										{
 											t.setQuantity(t.getQuantity()+Integer.parseInt(quantity));
 											r.calculateGrandTotal();
@@ -295,7 +295,7 @@ public class SalesMenuController
 									if (!transactionPerformed)
 									{
 										
-										Transaction newTransaction = new Transaction(r.getTransactionList().size()+1, itemName, pList.get(pID).getProductType(), pList.get(pID).getPrice(), Integer.parseInt(quantity));
+										Transaction newTransaction = new Transaction(r.getTransactionList().size()+1, itemID, pList.get(pID).getName(), pList.get(pID).getProductType(), pList.get(pID).getPrice(), Integer.parseInt(quantity));
 										r.addTransaction(newTransaction);
 										System.out.println("Transaction added successfully.");
 									
@@ -311,7 +311,7 @@ public class SalesMenuController
 									System.out.println("Insufficient stock! Unable to create new transaction.");
 							}
 							else
-								System.out.println("Product name or quantity is invalid.");
+								System.out.println("Product ID or quantity is invalid.");
 							
 							break;
 							
@@ -332,12 +332,13 @@ public class SalesMenuController
 							{
 								if (Integer.parseInt(tNo) > 0 && Integer.parseInt(tNo) <= tList.size())
 								{
+									int idToRemove = -1; // Initialised temporary value
 									Boolean reduceNo = false; // If true, the iteration will reduce tNo by 1
 									for (int i = 0; i < tList.size(); i++)
 									{
 										if (Integer.parseInt(tNo) == tList.get(i).getTransactionNo())
 										{
-											tList.remove(i);
+											idToRemove = i;
 											reduceNo = true;
 										}
 										
@@ -345,6 +346,11 @@ public class SalesMenuController
 											tList.get(i).setTransactionNo(tList.get(i).getTransactionNo()-1);
 										
 									}
+									
+									// Remove the transaction and calculate the grand total
+									tList.remove(idToRemove);
+									r.calculateGrandTotal();
+									
 									// Record the activity of editing transaction
 									userlogfile.put(new Timestamp(System.currentTimeMillis()), "Modified Transaction of Receipt ID: "+ r.getReceiptID()+'|'+login.getUser().getID());
 								}
@@ -418,13 +424,13 @@ public class SalesMenuController
 		
 	}
 	
-	private int validProductName(String itemName)
+	private int validProductID(String itemID)
 	{
 		 int index = -1;
 		
 		// Search in product list to check whether the product exists or not, and returns index (-1 if does not exist)
 		for (int i = 0; i < pList.size(); i++)
-			if (pList.get(i).getName().equals(itemName))
+			if (pList.get(i).getID().equals(itemID))
 				index = i;
 		
 		return index;
