@@ -2,7 +2,7 @@ import java.util.*;
 
 public class ProductController{
     private Login login;
-    private HashMap <Login, String> userlogfile;
+    private HashMap <Login, String> userlogfile = new HashMap<Login, String>();
     private ArrayList <Product> productList;
     Scanner input = new Scanner(System.in);
 
