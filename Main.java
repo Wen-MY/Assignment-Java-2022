@@ -14,7 +14,8 @@ public class Main {
         Login login;
         
         if(userList.isEmpty()){
-            User admin = new User (1,"Admin","Admin");
+            User admin = new User ("Admin","Admin");
+            admin.setUserType(1);
             userList.add(admin);
         }
         while (true){
