@@ -20,27 +20,28 @@ public class Login implements Serializable{
 	{
 		return timestamp;
 	}
-	public boolean validation( ArrayList<User> userList)
+	public boolean validation(ArrayList<User> userList)
 	{
-		userList.forEach((u)->
-		{
-			if( u.getID().equals(user.getID()))
+		for (User u: userList){
+			if(u.getID().equals(user.getID()))
 			{
-
 				if(u.getPassword().equals(user.getPassword()))
 				{
-					user.setUserType(u.getUserTypeInt());
-					
+					user.setUserType(u.getUserTypeInt());				
+					break;
 				}
-				else
+				else{
 					user.setUserType(0);
+				}
 			}
 			else
 				user.setUserType(0);
-		});
-		if(user.getUserType().equals("Unknown"))
+		};
+		if(user.getUserType().equals("Unknown")){
 			return false;
-		else
+		}
+		else{
 			return true;
+		}
 	}
 }
