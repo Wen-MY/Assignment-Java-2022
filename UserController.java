@@ -111,7 +111,7 @@ public class UserController{
                     new Timestamp(System.currentTimeMillis()), 
                     String.format(
                         "Edit User ID: '%s' to '%s'\nUser Type: '%s' to '%s'|%s", 
-                        initID, user.getID(), initType, user.getUserType(),login.getUser()
+                        initID, user.getID(), initType, user.getUserType(),login.getUser().getID()
                     )
                 );
             }
@@ -121,7 +121,7 @@ public class UserController{
                 if (userInput == 'y' || userInput == 'Y'){
                     deleteUser(user);
                     System.out.printf("User deleted\n");
-                    userlogfile.put(new Timestamp(System.currentTimeMillis()), "Deleted User: "+user.getID()+'|'+login.getUser());
+                    userlogfile.put(new Timestamp(System.currentTimeMillis()), "Deleted User: "+user.getID()+'|'+login.getUser().getID());
                 }
                 else{
                     System.out.printf("Failed to delete user\n");
@@ -187,7 +187,7 @@ public class UserController{
 
         userList.add(user);
         System.out.printf("User added successfully\n");
-        userlogfile.put(new Timestamp(System.currentTimeMillis()), "Added User: "+user.getID()+'|'+login.getUser());
+        userlogfile.put(new Timestamp(System.currentTimeMillis()), "Added User: "+user.getID()+'|'+login.getUser().getID());
     }
     public User findUser(String id){
         for (int i=0; i<userList.size(); i++){
