@@ -105,7 +105,7 @@ public class Main {
 			System.out.println("Invalid Option");
 		}
 		}
-		else
+		else if(login.getUser().getUserTypeInt() == 2)
 		{
 			usermenu();
 			try {
@@ -120,7 +120,12 @@ public class Main {
 			case 1:
 				SalesMenuController manageSales = new SalesMenuController(productList,salesList, login);
 				manageSales.addSales();
-				break;
+				if (manageSales.getUserlogfile() != null)
+				{
+					manageSales.getUserlogfile().forEach(
+							(key,value) -> userlogfile.put(key,value)
+							);
+				}
 			case 2:
 				
 				break;
@@ -136,6 +141,17 @@ public class Main {
 			nfe.getMessage();
 			System.out.println("Invalid Option");
 		}
+		}
+		else
+		{
+			SalesMenuController manageSales = new SalesMenuController(productList,salesList, login);
+			manageSales.addSales();
+			if (manageSales.getUserlogfile() != null)
+			{
+				manageSales.getUserlogfile().forEach(
+						(key,value) -> userlogfile.put(key,value)
+						);
+			}
 		}
 	}
 	
