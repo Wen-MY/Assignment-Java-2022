@@ -17,14 +17,13 @@ public class UserReport extends Report {
 	public void CreateReport()
 	{
 		SimpleDateFormat sdfrmt = new SimpleDateFormat("dd/MM/yyyy");
-		System.out.println("User ID\t|Event\t\t\t\t|Date and Time\n----------------------------------------------------");
 		for(Login key: userlogfile.keySet())
 		{
 			if(date2==null)
 			{
 				if((sdfrmt.format(key.getTimestamp())).equals(sdfrmt.format(date)))
 				{
-					System.out.println(key.getUser().getID()+"\t|"+userlogfile.get(key)+"\t|"+key.getTimestamp());
+					System.out.println("User ID \t:" +key.getUser().getID()+"\nEvent   \t:"+userlogfile.get(key)+"\nDate and Time   :"+key.getTimestamp() + '\n');
 				}
 				
 			}
@@ -32,7 +31,7 @@ public class UserReport extends Report {
 			{
 				if(((sdfrmt.format(key.getTimestamp())).equals(sdfrmt.format(date))||(sdfrmt.format(key.getTimestamp())).equals(sdfrmt.format(date2))||(key.getTimestamp().after(date) && key.getTimestamp().before(date2))))
 				{
-					System.out.println(key.getUser().getID()+"\t|"+userlogfile.get(key)+"\t|"+key.getTimestamp());
+					System.out.println("User ID \t:" +key.getUser().getID()+"\nEvent   \t:"+userlogfile.get(key)+"\nDate and Time   :"+key.getTimestamp()+ '\n');
 				}
 			}
 		}
