@@ -4,7 +4,7 @@ import java.sql.Timestamp;
 public class UserController{
     private ArrayList <User> userList;
     private Login login;
-    private HashMap <Timestamp,String> userlogfile;
+    private HashMap <Timestamp,String> userlogfile = new HashMap<Timestamp,String>();
     Scanner input = new Scanner(System.in);
 
     public UserController(ArrayList <User> initList, Login initLogin){
@@ -13,7 +13,7 @@ public class UserController{
     }
     public void menu(){
         while(true){
-            System.out.printf("Please select the following: \n");
+            System.out.printf("\nPlease select the following: \n");
             System.out.printf("1. View all user\n");
             System.out.printf("2. Search user\n");
             System.out.printf("3. Add user\n");
