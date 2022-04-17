@@ -141,7 +141,7 @@ public class SalesMenuController
 		if (newReceipt.getTransactionList().size() != 0)
 		{
 			rList.add(newReceipt);
-			userlogfile.put(new Timestamp(System.currentTimeMillis()), "Recorded Receipt: "+ newReceipt.getReceiptID());
+			userlogfile.put(new Timestamp(System.currentTimeMillis()), "Recorded Receipt: "+ newReceipt.getReceiptID()+'|'+login.getUser().getID());
 		}
 		
 	}
@@ -248,7 +248,7 @@ public class SalesMenuController
 							{
 								r.setDate();
 								// Record the activity of editing date
-								userlogfile.put(new Timestamp(System.currentTimeMillis()), "Updated date of Receipt ID: "+ r.getReceiptID()+'|'+login.getUser());
+								userlogfile.put(new Timestamp(System.currentTimeMillis()), "Updated date of Receipt ID: "+ r.getReceiptID()+'|'+login.getUser().getID());
 							}
 							else
 								System.out.println("Receipt date has not been changed. Returning to previous menu....");
@@ -305,7 +305,7 @@ public class SalesMenuController
 									pList.get(pID).updateStock(-(Integer.parseInt(quantity)));
 									
 									// Record the activity of editing transaction
-									userlogfile.put(new Timestamp(System.currentTimeMillis()), "Modified Transaction of Receipt ID: "+ r.getReceiptID()+'|'+login.getUser());
+									userlogfile.put(new Timestamp(System.currentTimeMillis()), "Modified Transaction of Receipt ID: "+ r.getReceiptID()+'|'+login.getUser().getID());
 								}
 								else
 									System.out.println("Insufficient stock! Unable to create new transaction.");
@@ -346,7 +346,7 @@ public class SalesMenuController
 										
 									}
 									// Record the activity of editing transaction
-									userlogfile.put(new Timestamp(System.currentTimeMillis()), "Modified Transaction of Receipt ID: "+ r.getReceiptID()+'|'+login.getUser());
+									userlogfile.put(new Timestamp(System.currentTimeMillis()), "Modified Transaction of Receipt ID: "+ r.getReceiptID()+'|'+login.getUser().getID());
 								}
 								else
 									System.out.println("Invalid input! Please try again.");
@@ -367,7 +367,7 @@ public class SalesMenuController
 								deleted = true;
 								
 								// Record the activity of deleting the receipt
-								userlogfile.put(new Timestamp(System.currentTimeMillis()), "Deleted Receipt ID: "+ r.getReceiptID()+'|'+login.getUser());
+								userlogfile.put(new Timestamp(System.currentTimeMillis()), "Deleted Receipt ID: "+ r.getReceiptID()+'|'+login.getUser().getID());
 								
 							}
 							else
