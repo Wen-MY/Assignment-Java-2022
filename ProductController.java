@@ -17,18 +17,10 @@ public class ProductController{
             System.out.printf("1. View all product\n");
             System.out.printf("2. Search product\n");
             System.out.printf("3. Add product\n");
-            System.out.printf("4. Exit\n");
-            int choice;
-            while(true){
-                try{
-                    choice = Integer.parseInt(input.nextLine());
-                    break;
-                } catch (NumberFormatException ex){
-                    System.out.printf("Integer Input Required\n");
-                }
-            }
+            System.out.printf("0. Exit\n");
+            String choice = input.nextLine();
 
-            if (choice == 1){
+            if (choice.equals("1")){
                 int i = getNumOfProduct();
                 if (i == 0){
                     System.out.printf("No product found.\n");
@@ -43,17 +35,17 @@ public class ProductController{
                 System.out.printf("\nPress Enter to continue...");
                 input.nextLine();
             }  
-            else if(choice == 2){
+            else if(choice.equals("2")){
                 searchProduct();
                 System.out.printf("\nPress Enter to continue...");
                 input.nextLine();
             }
-            else if(choice == 3){
+            else if(choice.equals("3")){
                 addProduct();
                 System.out.printf("\nPress Enter to continue...");
                 input.nextLine();
             }
-            else if (choice ==4){
+            else if(choice.equals("0")){
                 System.out.printf("\nPress Enter to continue...");
                 input.nextLine();
                 break;
@@ -67,7 +59,7 @@ public class ProductController{
     }
     public void printProduct(Product product){
         System.out.printf(
-            "Product ID: %8s  Product Name: %15s Product Type: %8s\n",
+            "Product ID: %8s  Product Name: %15s  Product Type: %8s\n",
             product.getID(), product.getName(), product.getProductType()
         );
     }
@@ -146,9 +138,15 @@ public class ProductController{
         }
     }
     public void addProduct(){
+        int index;
+        if (productList.size() == 0){
+            index = 1;
+        }
+        else{
+            index = Integer.parseInt(productList.get(productList.size()-1).getID()) + 1;
+        }
+        String id = String.format("%08d", index);
         System.out.printf("Please insert the details of the product.\n");
-        System.out.printf("Product ID: ");
-        String id = input.nextLine();
         System.out.printf("Product Name: ");
         String name = input.nextLine();
         System.out.printf("Product Price: ");
