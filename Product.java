@@ -6,48 +6,38 @@ public class Product implements Serializable{
     private double price;
     private int stock;
 
-    public Product(String initID, String initName, double initPrice, String initType){
+    public Product(String initID, String initName, double initPrice, String initType, int initStock){
         name = initName;
         id = initID;
         price = initPrice;
         productType = initType;
+        stock = initStock;
     }
-    
     public String getID(){
         return id;
     }
-    
     public String getName(){
         return name;
     }
-    
-    public void setName(String value){
-        name = value;
-    }
-    
     public double getPrice(){
         return price;
     }
-    
-    public void setPrice(double value){
-        price = value;
-    }
-    
     public String getProductType(){
         return productType;
     }
-    
+    public int getStock(){
+    	return stock;
+    }
+    public void setName(String value){
+        name = value;
+    }
+    public void setPrice(double value){
+        price = value;
+    }
     public void setProductType(String value){
         productType = value;
     }
-    
-    public int getStock()
-    {
-    	return this.stock;
-    }
-    
-    public void updateStock(int num)
-    {
+    public void updateStock(int num){
     	stock += num;
     }
 }
