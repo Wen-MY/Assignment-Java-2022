@@ -1,5 +1,5 @@
-import java.sql.Timestamp;
 import java.util.*;
+import java.sql.Timestamp;
 
 public class SalesMenuController
 {
@@ -22,10 +22,10 @@ public class SalesMenuController
 	
 	// Login details (for record purposes)
 	private Login login;
-	private HashMap <Timestamp,String> userlogfile;
+	private HashMap <Timestamp, String> userlogfile;
 	
 	// For recording activities performed during the duration of the login
-    public HashMap <Timestamp,String> getUserlogfile(){
+    public HashMap <Timestamp, String> getUserlogfile(){
         return userlogfile;
     }
 	
@@ -35,7 +35,7 @@ public class SalesMenuController
 		pList = _pList;
 		rList = _rList;
 		login = _login;
-		userlogfile = new HashMap<Timestamp,String>();
+		userlogfile = new HashMap<Timestamp, String>();
 	}
 	
 	public void showSalesMenu()
@@ -94,8 +94,8 @@ public class SalesMenuController
 				// Get product index 
 				int pID = validProductName(itemName);
 				
-				// Check if product has sufficient stock (stock must be more than quantity)
-				if (pList.get(pID).getStock() > 0 && pList.get(pID).getStock() >= Integer.parseInt(quantity))
+				// Check if product has sufficient stock (stock must be more than quantity), quantity must be a positive integer
+				if (pList.get(pID).getStock() > 0  && Integer.parseInt(quantity) > 0 && pList.get(pID).getStock() >= Integer.parseInt(quantity))
 				{
 					Boolean transactionPerformed = false;
 					// Check if product with same name already exists in transaction
@@ -125,7 +125,7 @@ public class SalesMenuController
 					}
 					
 					// Update the stock count after recording the transaction (Original stock count - quantity)
-					pList.get(pID).updateStock(pList.get(pID).getStock()-Integer.parseInt(quantity));
+					pList.get(pID).updateStock(-(Integer.parseInt(quantity)));
 				}
 				else
 					System.out.println("Insufficient stock! Unable to create sales record. Enter any input to try again. ((B) - Back)");
@@ -141,12 +141,12 @@ public class SalesMenuController
 		if (newReceipt.getTransactionList().size() != 0)
 		{
 			rList.add(newReceipt);
-			userlogfile.put(new Timestamp(System.currentTimeMillis()), "Recorded Receipt: "+ newReceipt.getReceiptID()+'|'+login.getUser());
+			userlogfile.put(new Timestamp(System.currentTimeMillis()), "Recorded Receipt: "+ newReceipt.getReceiptID());
 		}
 		
 	}
 		
-	private void viewSales()
+	public void viewSales()
 	{
 		// view sales method
 		
@@ -207,7 +207,7 @@ public class SalesMenuController
 		
 	}
 	
-	private void editSales() // edit sales method
+	public void editSales() // edit sales method
 	{
 		/*
 			EDIT OPTIONS (Other than (B) - Back)
@@ -274,8 +274,8 @@ public class SalesMenuController
 								// Get product index 
 								int pID = validProductName(itemName);
 								
-								// Check if product has sufficient stock (stock must be more than quantity)
-								if (pList.get(pID).getStock() > 0 && pList.get(pID).getStock() >= Integer.parseInt(quantity))
+								// Check if product has sufficient stock (stock must be more than quantity), quantity must be a positive integer
+								if (pList.get(pID).getStock() > 0  && Integer.parseInt(quantity) > 0 && pList.get(pID).getStock() >= Integer.parseInt(quantity))
 								{
 									Boolean transactionPerformed = false;
 									// Check if product with same name already exists in transaction
@@ -302,7 +302,7 @@ public class SalesMenuController
 									}
 									
 									// Update the stock count after recording the transaction (Original stock count - quantity)
-									pList.get(pID).updateStock(pList.get(pID).getStock()-Integer.parseInt(quantity));
+									pList.get(pID).updateStock(-(Integer.parseInt(quantity)));
 									
 									// Record the activity of editing transaction
 									userlogfile.put(new Timestamp(System.currentTimeMillis()), "Modified Transaction of Receipt ID: "+ r.getReceiptID()+'|'+login.getUser());
