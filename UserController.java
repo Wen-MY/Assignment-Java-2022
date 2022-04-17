@@ -10,6 +10,7 @@ public class UserController{
     public UserController(ArrayList <User> initList, Login initLogin){
         userList = initList;
         login = initLogin;
+	userlogfile = new HashMap<Timestamp,String>();
     }
     public void menu(){
         while(true){
