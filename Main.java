@@ -72,6 +72,9 @@ public class Main {
                 else if(choice.equals("5")){
                     stockManagement(login);
                 }
+                else if(choice.equals("6")){
+                    UserSetting(login);
+                }
                 else if (choice.equals("0")){
                     System.out.printf("Exiting...\n");
                     fillingEvent();
@@ -228,6 +231,8 @@ public class Main {
                 input.nextLine();
             }
             else{
+                System.out.printf("Product found\n");
+                manageProduct.printProduct(product);
                 break;
             }
         }
@@ -248,6 +253,7 @@ public class Main {
         }
         product.updateStock(number);
         System.out.printf("Restock Successfully\n");
+        manageProduct.printProduct(product);
         System.out.printf("Press Enter to continue...");
         input.nextLine();
     }
