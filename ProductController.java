@@ -1,15 +1,16 @@
+import java.sql.Timestamp;
 import java.util.*;
 
 public class ProductController{
     private Login login;
-    private HashMap <Login, String> userlogfile = new HashMap<Login, String>();
+    private HashMap <Timestamp,String> userlogfile = new HashMap<Timestamp,String>();
     private ArrayList <Product> productList;
     Scanner input = new Scanner(System.in);
 
     public ProductController(ArrayList <Product> initList, Login initLogin){
         productList = initList;
         login = initLogin;
-        userlogfile = new HashMap<Login,String>();
+        userlogfile = new HashMap<Timestamp,String>();
     }
     public void menu(){
         while (true){
@@ -110,10 +111,10 @@ public class ProductController{
                     System.out.printf("Product edited.\n");
 
                     userlogfile.put(
-                        login, 
+                        new Timestamp(System.currentTimeMillis()), 
                         String.format(
-                            "Edited Product Name: '%s' to '%s'\nPrice: '%.2f' to '%.2f'\nType: '%s' to '%s'",
-                            initName, product.getName(), initPrice, product.getPrice(), initType, product.getProductType()
+                            "Edited Product Name: '%s' to '%s'\nPrice: '%.2f' to '%.2f'\nType: '%s' to '%s'|%s",
+                            initName, product.getName(), initPrice, product.getPrice(), initType, product.getProductType(),login.getUser()
                         )
                     );
                     break;
@@ -124,7 +125,7 @@ public class ProductController{
                     if (userInput == 'y' || userInput == 'Y'){
                         deleteProduct(product);
                         System.out.printf("Product deleted\n");
-                        userlogfile.put(login, "Deleted Product: "+product.getName());
+                        userlogfile.put(new Timestamp(System.currentTimeMillis()), "Deleted Product: "+product.getName() +'|'+login.getUser());
                         break;
                     }
                     else{
@@ -190,7 +191,7 @@ public class ProductController{
 
         productList.add(product);
         System.out.printf("Product added successfully\n");
-        userlogfile.put(login, "Added Product: "+product.getName()+'\t');
+        userlogfile.put(new Timestamp(System.currentTimeMillis()), "Added Product: "+product.getName()+'|'+login.getUser());
     }
     public int getNumOfProduct(){
         return productList.size();
@@ -206,7 +207,7 @@ public class ProductController{
     public void deleteProduct(Product product){
         productList.remove(product);
     }   
-    public HashMap <Login, String> getUserlogfile(){
+    public HashMap <Timestamp,String> getUserlogfile(){
         return userlogfile;
     }
 }
