@@ -50,25 +50,31 @@ public class Main {
 							UserController manageUser = new UserController(userList, login);
 							manageUser.menu();
 							if(manageUser.getUserlogfile()!= null)
+							{
 								manageUser.getUserlogfile().forEach(
-										(key,value) -> userlogfile.merge(key,value,(v1,v2) -> v1)
+										(key,value) -> userlogfile.put(key,value)
 										);
+							}
 							break;
 						case 2://sales event
 							SalesMenuController manageSales = new SalesMenuController(productList,salesList, login);
 							manageSales.showSalesMenu();
 							if (manageSales.getUserlogfile() != null)
+							{
 								manageSales.getUserlogfile().forEach(
-										(key,value) -> userlogfile.merge(key,value,(v1,v2) -> v1)
+										(key,value) -> userlogfile.put(key,value)
 										);
+							}
 							break;
 						case 3:
 							ProductController manageProduct = new ProductController(productList, login);
 							manageProduct.menu();
 							if(manageProduct.getUserlogfile()!= null)
+							{
 								manageProduct.getUserlogfile().forEach(
-										(key,value) -> userlogfile.merge(key,value,(v1,v2) -> v1)
+										(key,value) -> userlogfile.put(key,value)
 										);
+							}
 							break;
 						case 4:
 							ReportEvent e =new ReportEvent(salesList,userlogfile);
@@ -138,7 +144,7 @@ public class Main {
 		System.out.println("2.Sales Management");
 		System.out.println("3.Product Management");
 		System.out.println("4.Report Management");
-		System.out.println("5.Stock Management");
+		System.out.println("5.Update stock");
 		System.out.println("6.Account Setting");
 		System.out.println("0.Exit");
 	}
@@ -147,7 +153,7 @@ public class Main {
 		System.out.println("1.Create sales");
 		System.out.println("2.Update stock");
 		System.out.println("3.Account Setting");
-		System.out.println("4.Exit");
+		System.out.println("0.Exit");
 	}
 	
 	public static void UserSetting(Login login)
