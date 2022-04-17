@@ -3,7 +3,7 @@ import java.util.*;
 
 public class ProductController{
     private Login login;
-    private HashMap <Timestamp,String> userlogfile;
+    private HashMap <Timestamp,String> userlogfile = new HashMap<Timestamp,String>();
     private ArrayList <Product> productList;
     Scanner input = new Scanner(System.in);
 
@@ -14,7 +14,7 @@ public class ProductController{
     }
     public void menu(){
         while (true){
-            System.out.printf("Please select the following: \n");
+            System.out.printf("\nPlease select the following: \n");
             System.out.printf("1. View all product\n");
             System.out.printf("2. Search product\n");
             System.out.printf("3. Add product\n");
@@ -134,24 +134,6 @@ public class ProductController{
                     else{
                         System.out.printf("Failed to delete product\n");
                     }
-                }
-                else if(choice.equals("3")){
-                    int restock;
-                    while(true){
-                        System.out.printf("Please enter the restock number: ");
-                        try{
-                            restock = Integer.parseInt(input.nextLine());
-                            if (restock <= 0){
-                                System.out.printf("Positive Integer Required\n");
-                            }
-                            else{
-                                break;
-                            }
-                        } catch(NumberFormatException ex){
-                            System.out.printf("Integer Input Required\n");
-                        }
-                    }
-                    product.updateStock(restock);
                 }
                 else if(choice.equals("0")){
                     System.out.printf("Press enter to continue...");
