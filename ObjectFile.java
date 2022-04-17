@@ -1,4 +1,5 @@
 import java.io.*;
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.ArrayList;
 
@@ -52,7 +53,7 @@ public class ObjectFile{
 				System.out.println("Error initializing stream in U_W");
 			}
 	}
-	public void U_Writer(HashMap <Login,String> log)
+	public void U_Writer(HashMap <Timestamp,String> log)
 	{
 		try {
 		FileOutputStream f = new FileOutputStream(new File("UserLogFile.txt"));
@@ -107,14 +108,14 @@ public class ObjectFile{
 			}
 	}
 	@SuppressWarnings({ "finally", "unchecked" })
-	public HashMap<Login,String> Map_Reader()
+	public HashMap<Timestamp,String> Map_Reader()
 	{
-		HashMap<Login,String> temp = new HashMap<>();
+		HashMap<Timestamp,String> temp = new HashMap<>();
 		try {
 			FileInputStream f = new FileInputStream(new File("UserLogFile.txt"));
 			ObjectInputStream i = new ObjectInputStream(f);
 			
-			temp=(HashMap<Login,String>)i.readObject();
+			temp=(HashMap<Timestamp,String>)i.readObject();
 			i.close();
 			}catch (FileNotFoundException e)
 			{
