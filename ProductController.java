@@ -59,8 +59,8 @@ public class ProductController{
     }
     public void printProduct(Product product){
         System.out.printf(
-            "Product ID: %8s  Product Name: %15s  Product Type: %8s\n",
-            product.getID(), product.getName(), product.getProductType()
+            "Product ID\t: %20s\nProduct Name\t: %20s \nProduct Type\t: %20s\nPrice\t\t: %20.2f\nStock\t\t: %20d\n\n",
+            product.getID(), product.getName(), product.getProductType(), product.getPrice(), product.getStock()
         );
     }
     public void searchProduct(){
@@ -73,66 +73,90 @@ public class ProductController{
         }
         else{
             System.out.printf("product found\n");
-            printProduct(product);
-            System.out.printf("\nDo you wish to: \n");
-            System.out.printf("1. Edit the product\n");
-            System.out.printf("2. Delete the product\n");
-            System.out.printf("3. Back to menu\n>>>");
-            int choice;
-            while(true){
-                try{
-                    choice = Integer.parseInt(input.nextLine());
-                    break;
-                } catch (NumberFormatException ex){
-                    System.out.printf("Integer Input Required\n");
-                }
-            }
+            while (true){
+                printProduct(product);
+                System.out.printf("\nDo you wish to: \n");
+                System.out.printf("1. Edit the product\n");
+                System.out.printf("2. Delete the product\n");
+                System.out.printf("3. Restock product\n");
+                System.out.printf("0. Back to menu\n>>>");
+                String choice = input.nextLine();
 
-            if (choice == 1){
-                String initName = product.getName();
-                double initPrice = product.getPrice();
-                String initType = product.getProductType();
-                
-                System.out.printf("Please insert the new data.\n");
-                System.out.printf("Product Name: ");
-                String name = input.nextLine();
-                System.out.printf("Product Price: ");
-                double price;
-                while(true){
-                    try{
-                        price = Double.parseDouble(input.nextLine());
+                if (choice.equals("1")){
+                    String initName = product.getName();
+                    double initPrice = product.getPrice();
+                    String initType = product.getProductType();
+                    
+                    System.out.printf("Please insert the new data.\n");
+                    System.out.printf("Product Name: ");
+                    String name = input.nextLine();
+                    System.out.printf("Product Price: ");
+                    double price;
+                    while(true){
+                        try{
+                            price = Double.parseDouble(input.nextLine());
+                            break;
+                        } catch (NumberFormatException ex){
+                            System.out.printf("Integer Input Required\n");
+                        }
+                    }
+                    System.out.printf("Product Type: ");
+                    String type = input.nextLine();
+
+                    product.setName(name);
+                    product.setPrice(price);
+                    product.setProductType(type);
+
+                    System.out.printf("Product edited.\n");
+
+                    userlogfile.put(
+                        login, 
+                        String.format(
+                            "Edited Product Name: '%s' to '%s'\nPrice: '%.2f' to '%.2f'\nType: '%s' to '%s'",
+                            initName, product.getName(), initPrice, product.getPrice(), initType, product.getProductType()
+                        )
+                    );
+                    break;
+                }
+                else if(choice.equals("2")){
+                    System.out.printf("Are you sure? (y/n)");
+                    char userInput = input.next().charAt(0);
+                    if (userInput == 'y' || userInput == 'Y'){
+                        deleteProduct(product);
+                        System.out.printf("Product deleted\n");
+                        userlogfile.put(login, "Deleted Product: "+product.getName());
                         break;
-                    } catch (NumberFormatException ex){
-                        System.out.printf("Integer Input Required\n");
+                    }
+                    else{
+                        System.out.printf("Failed to delete product\n");
                     }
                 }
-                System.out.printf("Product Type: ");
-                String type = input.nextLine();
-
-                product.setName(name);
-                product.setPrice(price);
-                product.setProductType(type);
-
-                System.out.printf("Product edited.\n");
-
-                userlogfile.put(
-                    login, 
-                    String.format(
-                        "Edited Product Name: '%s' to '%s'\nPrice: '%.2f' to '%.2f'\nType: '%s' to '%s'",
-                        initName, product.getName(), initPrice, product.getPrice(), initType, product.getProductType()
-                    )
-                );
-            }
-            else if(choice == 2){
-                System.out.printf("Are you sure? (y/n)");
-                char userInput = input.next().charAt(0);
-                if (userInput == 'y' || userInput == 'Y'){
-                    deleteProduct(product);
-                    System.out.printf("Product deleted\n");
-                    userlogfile.put(login, "Deleted Product: "+product.getName());
+                else if(choice.equals("3")){
+                    int restock;
+                    while(true){
+                        System.out.printf("Please enter the restock number: ");
+                        try{
+                            restock = Integer.parseInt(input.nextLine());
+                            if (restock <= 0){
+                                System.out.printf("Positive Integer Required\n");
+                            }
+                            else{
+                                break;
+                            }
+                        } catch(NumberFormatException ex){
+                            System.out.printf("Integer Input Required\n");
+                        }
+                    }
+                    product.updateStock(restock);
+                }
+                else if(choice.equals("0")){
+                    System.out.printf("Press enter to continue...");
+                    input.nextLine();   
                 }
                 else{
-                    System.out.printf("Failed to delete product\n");
+                    System.out.printf("Invalid Input\n");
+                    System.out.printf("Press enter to continue...");
+                    input.nextLine();
                 }
             }
         }
