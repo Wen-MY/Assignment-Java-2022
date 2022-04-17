@@ -1,10 +1,13 @@
 import java.util.*;
+import java.io.Console;
+import java.sql.Timestamp;
 
 public class UserController{
     private ArrayList <User> userList;
     private Login login;
-    private HashMap <Login, String> userlogfile = new HashMap <Login, String>();
+    private HashMap <Timestamp,String> userlogfile;
     Scanner input = new Scanner(System.in);
+    Console console = System.console();
 
     public UserController(ArrayList <User> initList, Login initLogin){
         userList = initList;
@@ -105,10 +108,10 @@ public class UserController{
                 System.out.printf("User edited.\n");
 
                 userlogfile.put(
-                    login, 
+                    new Timestamp(System.currentTimeMillis()), 
                     String.format(
-                        "Edit User ID: '%s' to '%s'\nUser Type: '%s' to '%s'", 
-                        initID, user.getID(), initType, user.getUserType()
+                        "Edit User ID: '%s' to '%s'\nUser Type: '%s' to '%s'|%s", 
+                        initID, user.getID(), initType, user.getUserType(),login.getUser()
                     )
                 );
             }
@@ -118,7 +121,7 @@ public class UserController{
                 if (userInput == 'y' || userInput == 'Y'){
                     deleteUser(user);
                     System.out.printf("User deleted\n");
-                    userlogfile.put(login, "Deleted User: "+user.getID());
+                    userlogfile.put(new Timestamp(System.currentTimeMillis()), "Deleted User: "+user.getID()+'|'+login.getUser());
                 }
                 else{
                     System.out.printf("Failed to delete user\n");
@@ -133,14 +136,14 @@ public class UserController{
         do{
             do{
                 System.out.printf("\nNew password (minimum 8 characters)\n: ");
-                password1 = input.nextLine();
+                password1 = new String(console.readPassword());
                 if (password1.length()<8){
                     System.out.printf("\nPassword must have at least 8 characters\n");
                 }
             }while(password1.length()<8);
 
             System.out.printf("\nPlease insert again\n: ");
-            password2 = input.nextLine();
+            password2 = new String(console.readPassword());
 
             if (password1.equals(password2)){
                 valid = true;
@@ -184,7 +187,7 @@ public class UserController{
 
         userList.add(user);
         System.out.printf("User added successfully\n");
-        userlogfile.put(login, "Added User: "+user.getID());
+        userlogfile.put(new Timestamp(System.currentTimeMillis()), "Added User: "+user.getID()+'|'+login.getUser());
     }
     public User findUser(String id){
         for (int i=0; i<userList.size(); i++){
@@ -197,7 +200,7 @@ public class UserController{
     public void deleteUser(User user){
         userList.remove(user);
     }   
-    public HashMap <Login, String> getUserlogfile(){
+    public HashMap <Timestamp,String> getUserlogfile(){
         return userlogfile;
     }
 }
