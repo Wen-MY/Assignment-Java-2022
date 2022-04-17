@@ -117,14 +117,14 @@ public class Main {
             }
         }
         else{
-            SalesMenuController manageSales = new SalesMenuController(productList,salesList, login);
+            SalesMenuController manageSales = new SalesMenuController(productList, salesList, login);
             manageSales.addSales();
-            if (manageSales.getUserlogfile() != null)
-            {
+            if (manageSales.getUserlogfile() != null){
                 manageSales.getUserlogfile().forEach(
                     (key,value) -> userlogfile.put(key,value)
                 );
             }
+            fillingEvent();
         }
     }
     
