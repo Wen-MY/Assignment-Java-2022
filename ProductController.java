@@ -114,7 +114,7 @@ public class ProductController{
                         new Timestamp(System.currentTimeMillis()), 
                         String.format(
                             "Edited Product Name: '%s' to '%s'\nPrice: '%.2f' to '%.2f'\nType: '%s' to '%s'|%s",
-                            initName, product.getName(), initPrice, product.getPrice(), initType, product.getProductType(),login.getUser()
+                            initName, product.getName(), initPrice, product.getPrice(), initType, product.getProductType(),login.getUser().getID()
                         )
                     );
                     break;
@@ -125,7 +125,7 @@ public class ProductController{
                     if (userInput == 'y' || userInput == 'Y'){
                         deleteProduct(product);
                         System.out.printf("Product deleted\n");
-                        userlogfile.put(new Timestamp(System.currentTimeMillis()), "Deleted Product: "+product.getName() +'|'+login.getUser());
+                        userlogfile.put(new Timestamp(System.currentTimeMillis()), "Deleted Product: "+product.getName() +'|'+login.getUser().getID());
                         break;
                     }
                     else{
@@ -191,7 +191,7 @@ public class ProductController{
 
         productList.add(product);
         System.out.printf("Product added successfully\n");
-        userlogfile.put(new Timestamp(System.currentTimeMillis()), "Added Product: "+product.getName()+'|'+login.getUser());
+        userlogfile.put(new Timestamp(System.currentTimeMillis()), "Added Product: "+product.getName()+'|'+login.getUser().getID());
     }
     public int getNumOfProduct(){
         return productList.size();
