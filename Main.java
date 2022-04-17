@@ -29,102 +29,102 @@ public class Main {
             else{
                 break;
             }
-            userlogfile.put(new Timestamp(System.currentTimeMillis()),"Login|"+login.getUser().getID());
-            
-            String choice;
-            if(login.getUser().getUserType().equals("admin")){
-                while (true){
-                    adminmenu();
-                    choice = input.nextLine();
-                    if(choice.equals("1")){
-                        UserController manageUser = new UserController(userList, login);
-                        manageUser.menu();
-                        if(manageUser.getUserlogfile()!= null){
-                            manageUser.getUserlogfile().forEach(
-                                (key,value) -> userlogfile.put(key,value)
-                            );
-                        }
+        }
+        userlogfile.put(new Timestamp(System.currentTimeMillis()),"Login|"+login.getUser().getID());
+        
+        String choice;
+        if(login.getUser().getUserType().equals("admin")){
+            while (true){
+                adminmenu();
+                choice = input.nextLine();
+                if(choice.equals("1")){
+                    UserController manageUser = new UserController(userList, login);
+                    manageUser.menu();
+                    if(manageUser.getUserlogfile()!= null){
+                        manageUser.getUserlogfile().forEach(
+                            (key,value) -> userlogfile.put(key,value)
+                        );
                     }
-                    else if(choice.equals("2")){
-                        SalesMenuController manageSales = new SalesMenuController(productList,salesList, login);
-                        manageSales.showSalesMenu();
-                        if (manageSales.getUserlogfile() != null)
-                        {
-                            manageSales.getUserlogfile().forEach(
-                                (key,value) -> userlogfile.put(key,value)
-                            );
-                        }
+                }
+                else if(choice.equals("2")){
+                    SalesMenuController manageSales = new SalesMenuController(productList,salesList, login);
+                    manageSales.showSalesMenu();
+                    if (manageSales.getUserlogfile() != null)
+                    {
+                        manageSales.getUserlogfile().forEach(
+                            (key,value) -> userlogfile.put(key,value)
+                        );
                     }
-                    else if(choice.equals("3")){
-                        ProductController manageProduct = new ProductController(productList, login);
-                        manageProduct.menu();
-                        if(manageProduct.getUserlogfile()!= null){
-                            manageProduct.getUserlogfile().forEach(
-                                (key,value) -> userlogfile.put(key,value)
-                            );
-                        }
+                }
+                else if(choice.equals("3")){
+                    ProductController manageProduct = new ProductController(productList, login);
+                    manageProduct.menu();
+                    if(manageProduct.getUserlogfile()!= null){
+                        manageProduct.getUserlogfile().forEach(
+                            (key,value) -> userlogfile.put(key,value)
+                        );
                     }
-                    else if(choice.equals("4")){
-                        ReportEvent e =new ReportEvent(salesList, userlogfile);
-                        e.Event();
-                    }
-                    else if(choice.equals("5")){
-                        stockManagement(login);
-                    }
-                    else if(choice.equals("6")){
-                        UserSetting(login);
-                    }
-                    else if (choice.equals("0")){
-                        System.out.printf("Exiting...\n");
-                        fillingEvent();
-                        System.out.printf("Data Saved\n");
-                        System.out.printf("Press Enter to continue...");
-                        input.nextLine();
-                        break;
-                    } 
-                    else{
-                        System.out.printf("\nInvalid Input\n");
-                    }
+                }
+                else if(choice.equals("4")){
+                    ReportEvent e =new ReportEvent(salesList, userlogfile);
+                    e.Event();
+                }
+                else if(choice.equals("5")){
+                    stockManagement(login);
+                }
+                else if(choice.equals("6")){
+                    UserSetting(login);
+                }
+                else if (choice.equals("0")){
+                    System.out.printf("Exiting...\n");
+                    fillingEvent();
+                    System.out.printf("Data Saved\n");
+                    System.out.printf("Press Enter to continue...");
+                    input.nextLine();
+                    break;
+                } 
+                else{
+                    System.out.printf("\nInvalid Input\n");
                 }
             }
-            else if(login.getUser().getUserType().equals("staff")){
-                while (true){
-                    usermenu();
-                    choice = input.nextLine();
-                    if (choice.equals("1")){
-                        SalesMenuController manageSales = new SalesMenuController(productList,salesList, login);
-                        manageSales.addSales();
-                        if (manageSales.getUserlogfile() != null){
-                            manageSales.getUserlogfile().forEach(
-                                (key,value) -> userlogfile.put(key,value)
-                            );
-                        }
+        }
+        else if(login.getUser().getUserType().equals("staff")){
+            while (true){
+                usermenu();
+                choice = input.nextLine();
+                if (choice.equals("1")){
+                    SalesMenuController manageSales = new SalesMenuController(productList,salesList, login);
+                    manageSales.addSales();
+                    if (manageSales.getUserlogfile() != null){
+                        manageSales.getUserlogfile().forEach(
+                            (key,value) -> userlogfile.put(key,value)
+                        );
                     }
-                    else if (choice.equals("2")){
-                        stockManagement(login);
-                    }
-                    else if (choice.equals("3")){
-                        UserSetting(login);
-                    }
-                    else if (choice.equals("0")){
-                        System.out.printf("Exiting...\n");
-                        fillingEvent();
-                        System.out.printf("Data Saved\n");
-                        System.out.printf("Press Enter to continue...");
-                        input.nextLine();
-                        break;
-                    }
+                }
+                else if (choice.equals("2")){
+                    stockManagement(login);
+                }
+                else if (choice.equals("3")){
+                    UserSetting(login);
+                }
+                else if (choice.equals("0")){
+                    System.out.printf("Exiting...\n");
+                    fillingEvent();
+                    System.out.printf("Data Saved\n");
+                    System.out.printf("Press Enter to continue...");
+                    input.nextLine();
+                    break;
                 }
             }
-            else{
-                SalesMenuController manageSales = new SalesMenuController(productList,salesList, login);
-                manageSales.addSales();
-                if (manageSales.getUserlogfile() != null)
-                {
-                    manageSales.getUserlogfile().forEach(
-                        (key,value) -> userlogfile.put(key,value)
-                    );
-                }
+        }
+        else{
+            SalesMenuController manageSales = new SalesMenuController(productList,salesList, login);
+            manageSales.addSales();
+            if (manageSales.getUserlogfile() != null)
+            {
+                manageSales.getUserlogfile().forEach(
+                    (key,value) -> userlogfile.put(key,value)
+                );
             }
         }
     }
